@@ -206,6 +206,15 @@ export default function RainbowAtelier() {
     beep("pickup");
   }, [beep]);
   const start = useCallback((load = false) => {
+    setPaused(false);
+    setInventory(false);
+    setMixing(false);
+    setHiding(false);
+    setHorrorCut(null);
+    setResidual(false);
+    setDialog([]);
+    setLine(0);
+    keys.current.clear();
     if (load) {
       try {
         const s = JSON.parse(localStorage.getItem(SAVE_KEY) || "") as SaveData;
@@ -359,6 +368,7 @@ export default function RainbowAtelier() {
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
+      if (scene !== "game") return;
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
       )
@@ -379,7 +389,7 @@ export default function RainbowAtelier() {
       removeEventListener("keydown", down);
       removeEventListener("keyup", up);
     };
-  }, [interact]);
+  }, [interact, scene]);
 
   useEffect(() => {
     if (scene !== "game") return;
@@ -685,7 +695,16 @@ export default function RainbowAtelier() {
             <Pause
               save={save}
               close={() => setPaused(false)}
-              quit={() => setScene("title")}
+              quit={() => {
+                setPaused(false);
+                setInventory(false);
+                setMixing(false);
+                setHiding(false);
+                setHorrorCut(null);
+                setDialog([]);
+                keys.current.clear();
+                setScene("title");
+              }}
             />
           )}
         </section>
@@ -1294,6 +1313,12 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
   const [beat, setBeat] = useState(0),
     [muted, setMuted] = useState(false);
   const b = openingBeats[beat];
+  const [cutPlace, rawCutTime] = b.place.split(" · ");
+  const cutTime = rawCutTime?.replace(
+    /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i,
+    (_, hour: string, minute: string, meridiem: string) =>
+      `${hour.padStart(2, "0")}:${minute} ${meridiem.toUpperCase()}`,
+  );
   useEffect(() => {
     const auto = setTimeout(
       () =>
@@ -1383,10 +1408,13 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
             }
           />
           <div className="pixel-dialogue-copy">
-            <p className="mb-2 text-[10px] tracking-[.28em] text-amber-300">
-              {b.place}
+            <p className="opening-location mb-2 text-[10px] tracking-[.2em] text-amber-300">
+              {cutPlace}
             </p>
-            <b className="pixel-speaker">{b.speaker || "유나"}</b>
+            <div className="opening-speaker-row">
+              <b className="pixel-speaker">{b.speaker || "유나"}</b>
+              {cutTime && <time dateTime={cutTime}>{cutTime}</time>}
+            </div>
             <p
               className={`max-w-3xl text-sm leading-7 sm:text-lg sm:leading-9 ${b.tone === "danger" ? "cutscene-type text-red-200" : ""}`}
             >

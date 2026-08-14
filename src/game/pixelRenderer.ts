@@ -6,6 +6,7 @@ type Point = { x: number; y: number };
 const TILE = 16;
 let yunaSheet: HTMLCanvasElement | null = null;
 let yunaSheetLoading = false;
+let castSheetImage: HTMLImageElement | null = null;
 
 function getYunaSheet() {
   if (yunaSheet || yunaSheetLoading || typeof window === "undefined") return yunaSheet;
@@ -53,6 +54,17 @@ function getYunaSheet() {
     yunaSheet = canvas;
   };
   return null;
+}
+
+function getCastSheet() {
+  if (castSheetImage)
+    return castSheetImage.complete && castSheetImage.naturalWidth ? castSheetImage : null;
+  if (typeof window === "undefined") return null;
+  const image = new Image();
+  image.src = "/assets/portraits/cast-emotions.png";
+  image.onload = () => { castSheetImage = image; };
+  castSheetImage = image;
+  return image.complete ? image : null;
 }
 
 function box(
@@ -507,16 +519,17 @@ function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
       );
     box(ctx, "#19354b", 104, 33, 138, 56);
     box(ctx, "#446c85", 106, 35, 134, 4);
-    // Announcer: hair, face, suit, desk and microphone.
-    box(ctx, "#111722", 158, 42, 33, 5);
-    box(ctx, "#1d2633", 153, 47, 43, 24);
-    box(ctx, "#d6aa98", 160, 48, 29, 22);
-    box(ctx, "#263148", 163, 56, 4, 3);
-    box(ctx, "#263148", 182, 56, 4, 3);
-    box(ctx, "#8c4555", 171, 65, 8, 2);
-    box(ctx, "#263148", 149, 70, 51, 19);
-    box(ctx, "#e2dfd0", 171, 70, 8, 13);
-    box(ctx, "#9b1732", 174, 73, 3, 12);
+    // Use the same high-quality pixel portrait system as dialogue cutscenes.
+    const announcer = getCastSheet();
+    if (announcer) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(announcer, 1068, 0, 356, 355, 145, 38, 59, 53);
+      ctx.restore();
+    } else {
+      box(ctx, "#1d2633", 153, 47, 43, 42);
+      box(ctx, "#d6aa98", 160, 48, 29, 22);
+    }
     box(ctx, "#10151f", 112, 83, 119, 6);
     box(ctx, "#c5bca7", 211, 67, 2, 17);
     box(ctx, "#1b1720", 207, 64, 10, 5);
