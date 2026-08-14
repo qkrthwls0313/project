@@ -1346,7 +1346,7 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
       autoFocus
     >
       <CutVisual kind={b.visual} scene={b.scene} />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.05)_50%,rgba(0,0,0,.9))]" />
+      <div className="opening-visual-shade pointer-events-none absolute inset-x-0 top-0 bg-[linear-gradient(180deg,rgba(0,0,0,.15),transparent_65%,rgba(0,0,0,.55))]" />
       <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between p-4 text-[10px] tracking-[.25em] text-white/55 sm:p-7">
         <span>OPENING · 비 내리는 밤의 초청장</span>
         <span>
@@ -1355,7 +1355,7 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
       </div>
       <div
         key={beat}
-        className="cutscene-dialog absolute inset-x-0 bottom-0 z-30 p-4 sm:p-10"
+        className="cutscene-dialog opening-dialogue-dock absolute inset-x-0 bottom-0 z-30 p-3 sm:p-5"
       >
         <div className="opening-dialogue pixel-dialogue relative mx-auto max-w-5xl">
           <Portrait
@@ -1423,7 +1423,7 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
 }
 function CutVisual({ kind }: { kind: CutBeat["visual"]; scene: number }) {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-black">
+    <div className="opening-visual absolute inset-x-0 top-0 overflow-hidden bg-black">
       <PixelScene mode="opening" kind={kind} />
     </div>
   );

@@ -267,6 +267,17 @@ export function drawCharacter(
     box(ctx, villain ? "#c51c3d" : "#43345d", x + 33 + gaze, y + 21, 3, 4);
     box(ctx, "#ffffff", x + 17 + gaze, y + 21, 1, 1);
     box(ctx, "#ffffff", x + 34 + gaze, y + 21, 1, 1);
+    if (dir === "left") {
+      box(ctx, hair, x + 29, y + 15, 11, 13);
+      box(ctx, hairDark, x + 35, y + 22, 7, 10);
+      box(ctx, skin, x + 7, y + 24, 3, 4);
+      box(ctx, edge, x + 6, y + 26, 3, 2);
+    } else if (dir === "right") {
+      box(ctx, hair, x + 8, y + 15, 11, 13);
+      box(ctx, hairDark, x + 5, y + 22, 8, 10);
+      box(ctx, skin, x + 39, y + 24, 3, 4);
+      box(ctx, edge, x + 41, y + 26, 3, 2);
+    }
     box(ctx, "#b45c70", x + 10, y + 28, 4, 2);
     box(ctx, "#b45c70", x + 36, y + 28, 3, 2);
     box(ctx, "#9b4d5c", x + 22, y + 30, 6, 2);
@@ -419,26 +430,48 @@ function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
   dither(ctx, 278, 61, 19, 20, "#e9c967", 3);
   box(ctx, "#352431", 286, 80, 3, 30);
   if (tv) {
-    outline(ctx, 103, 30, 150, 91, "#10121a", "#4c7a8f", "#8ec8d2");
-    for (let i = 0; i < 140; i++)
+    // CRT casing, speaker grille, control light and a readable news studio.
+    outline(ctx, 91, 23, 174, 108, "#090b11", "#242c38", "#657687");
+    outline(ctx, 101, 30, 144, 86, "#080b12", "#2d5871", "#85b6c5");
+    for (let i = 0; i < 52; i++)
       box(
         ctx,
-        i % 3 ? "#d4edef" : "#315d71",
-        109 + ((i * 37 + frame * 9) % 138),
-        37 + ((i * 19) % 75),
-        2,
-        2,
+        i % 3 ? "#a9cdd6" : "#315d71",
+        104 + ((i * 37 + frame * 9) % 138),
+        33 + ((i * 19) % 78), 1, 1,
       );
-    box(ctx, "#a91633", 128, 49, 100, 16);
-    box(ctx, "#eef2dc", 134, 54, 64, 2);
-    box(ctx, "#09121b", 120, 85, 116, 14);
+    box(ctx, "#19354b", 104, 33, 138, 56);
+    box(ctx, "#446c85", 106, 35, 134, 4);
+    // Announcer: hair, face, suit, desk and microphone.
+    box(ctx, "#111722", 158, 42, 33, 5);
+    box(ctx, "#1d2633", 153, 47, 43, 24);
+    box(ctx, "#d6aa98", 160, 48, 29, 22);
+    box(ctx, "#263148", 163, 56, 4, 3);
+    box(ctx, "#263148", 182, 56, 4, 3);
+    box(ctx, "#8c4555", 171, 65, 8, 2);
+    box(ctx, "#263148", 149, 70, 51, 19);
+    box(ctx, "#e2dfd0", 171, 70, 8, 13);
+    box(ctx, "#9b1732", 174, 73, 3, 12);
+    box(ctx, "#10151f", 112, 83, 119, 6);
+    box(ctx, "#c5bca7", 211, 67, 2, 17);
+    box(ctx, "#1b1720", 207, 64, 10, 5);
+    box(ctx, "#a91633", 104, 89, 138, 15);
+    ctx.fillStyle = "#fff1d2"; ctx.font = "bold 7px monospace";
+    ctx.fillText("BREAKING NEWS", 110, 99);
+    box(ctx, "#09121b", 104, 104, 138, 9);
+    box(ctx, "#d9e3df", 110, 107, 102, 2);
+    for (let sy = 36; sy < 111; sy += 8) box(ctx, "#ffffff22", 104, sy, 137, 1);
+    for (let sy = 42; sy < 111; sy += 8) box(ctx, "#111111", 250, sy, 8, 2);
+    box(ctx, "#c52c42", 255, 118, 5, 5);
   } else drawCharacter(ctx, { x: 218, y: 133 }, "down", frame % 3);
   drawRain(ctx, frame);
 }
 
 function drawPhone(ctx: CanvasRenderingContext2D, frame: number) {
-  box(ctx, "#170810", 0, 0, 320, 180);
-  dither(ctx, 0, 0, 320, 180, "#3d1320", 5);
+  box(ctx, "#100a14", 0, 0, 320, 180);
+  dither(ctx, 0, 0, 320, 180, "#351421", 6);
+  box(ctx, "#22131e", 20, 20, 74, 138);
+  drawTable(ctx, 12, 132, 82);
   outline(
     ctx,
     102 + (frame % 2),
@@ -450,23 +483,37 @@ function drawPhone(ctx: CanvasRenderingContext2D, frame: number) {
     "#594052",
   );
   box(ctx, "#0d0c12", 142, 14, 36, 7);
-  box(ctx, "#ead9d0", 118, 37, 61, 3);
-  box(ctx, "#8f1230", 116, 58, 88, 35);
-  box(ctx, "#c51f43", 116, 102, 88, 38);
-  dither(ctx, 120, 62, 80, 27, "#e68a98", 4);
-  box(ctx, "#f8d9de", 125, 70, 52, 2);
-  box(ctx, "#f8d9de", 125, 78, 65, 2);
-  box(ctx, "#ffd8dc", 125, 114, 70, 2);
-  box(ctx, "#ffd8dc", 125, 122, 51, 2);
-  box(ctx, "#8d0b2b", 145, 150, 30, 8);
+  box(ctx, "#e8ddd2", 108, 25, 104, 8);
+  ctx.fillStyle = "#251623"; ctx.font = "bold 7px monospace";
+  ctx.fillText("10:13 PM", 115, 31);
+  box(ctx, "#6c1730", 108, 35, 104, 18);
+  box(ctx, "#e6cbd0", 114, 40, 8, 8);
+  box(ctx, "#522338", 116, 41, 4, 5);
+  ctx.fillStyle = "#ffe8eb"; ctx.fillText("서아", 128, 47);
+  // Clearly separated chat bubbles with tails and typed message lines.
+  outline(ctx, 112, 59, 88, 31, "#3e101f", "#8f2941", "#d35c72");
+  box(ctx, "#8f2941", 196, 83, 8, 5);
+  box(ctx, "#ffe3e7", 120, 67, 64, 2); box(ctx, "#ffe3e7", 120, 74, 53, 2);
+  outline(ctx, 120, 98, 88, 35, "#531025", "#c51f43", "#ed6077");
+  box(ctx, "#c51f43", 204, 125, 8, 5);
+  box(ctx, "#ffe1e6", 128, 106, 65, 2); box(ctx, "#ffe1e6", 128, 113, 70, 2);
+  box(ctx, "#ffe1e6", 128, 120, 48, 2);
+  outline(ctx, 139, 143, 42, 17, "#340b18", "#98152f", "#dc3955");
+  box(ctx, "#f2d4da", 151, 149, 17, 2);
+  box(ctx, "#b8a99e", 149, 166, 22, 3);
+  if (frame % 4 < 2) box(ctx, "#f14a61", 99, 43, 3, 12);
 }
 
 function drawSchool(ctx: CanvasRenderingContext2D, frame: number) {
   box(ctx, "#07101b", 0, 0, 320, 126);
   box(ctx, "#151b22", 0, 126, 320, 54);
   dither(ctx, 0, 126, 320, 54, "#2d3d46", 4);
-  outline(ctx, 48, 17, 224, 131, "#070b11", "#24303a", "#394956");
-  outline(ctx, 102, 29, 116, 20, "#15141a", "#d1c39e", "#f0dfb5");
+  outline(ctx, 38, 13, 244, 139, "#070b11", "#24303a", "#52616a");
+  box(ctx, "#111820", 46, 21, 228, 7);
+  outline(ctx, 91, 29, 138, 23, "#15141a", "#d1c39e", "#f0dfb5");
+  ctx.fillStyle = "#3e2630"; ctx.font = "bold 9px monospace";
+  ctx.fillText("무지개 미술학원", 105, 44);
+  box(ctx, "#67513d", 100, 52, 120, 3);
   for (let row = 0; row < 2; row++)
     for (let col = 0; col < 5; col++) {
       outline(
@@ -479,16 +526,24 @@ function drawSchool(ctx: CanvasRenderingContext2D, frame: number) {
         col === 2 && row === 1 ? "#62152a" : "#111923",
         "#263a4b",
       );
+      box(ctx, "#090d13", 76 + col * 40, 62 + row * 38, 2, 25);
+      box(ctx, "#090d13", 66 + col * 40, 73 + row * 38, 23, 2);
     }
-  box(ctx, "#b20b31", 136, 137, 50, 8);
-  dither(ctx, 136, 137, 50, 8, "#f32652", 3);
-  outline(ctx, 246, 95, 22, 53, "#05080c", "#11161d", "#293541");
+  // Main door, side entrance, red basement light and chained gate.
+  outline(ctx, 126, 112, 68, 39, "#05080c", "#11161d", "#394652");
+  box(ctx, "#08070c", 158, 114, 3, 36);
+  box(ctx, "#a11a35", 132, 140, 56, 8);
+  dither(ctx, 132, 140, 56, 8, "#f32652", 3);
+  outline(ctx, 246, 94, 25, 58, "#05080c", "#11161d", "#52606a");
+  box(ctx, "#bda561", 249, 120, 15, 3);
+  box(ctx, "#bda561", 255, 114, 3, 16);
   drawCharacter(ctx, { x: 82, y: 160 }, "up", frame % 3);
   box(ctx, "#242d35", 0, 145, 320, 4);
   for (let i = 0; i < 10; i++) {
     box(ctx, "#34434d", i * 37 - 8, 137, 3, 43);
     box(ctx, "#34434d", i * 37 - 8, 148, 27, 3);
   }
+  for (let i = 0; i < 6; i++) box(ctx, "#9b8b61", 112 + i * 11, 151 - i, 8, 2);
   drawRain(ctx, frame);
   if (frame % 18 === 0) box(ctx, "#dce9e9", 0, 0, 320, 180);
 }
