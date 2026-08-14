@@ -1168,8 +1168,8 @@ function PixelScene({
   return (
     <canvas
       ref={ref}
-      width={320}
-      height={180}
+      width={mode === "opening" ? 640 : 320}
+      height={mode === "opening" ? 360 : 180}
       className="pixel-art-canvas absolute inset-0 h-full w-full"
       aria-hidden="true"
     />

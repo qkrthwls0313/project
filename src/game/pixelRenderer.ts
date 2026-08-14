@@ -7,6 +7,7 @@ const TILE = 16;
 let yunaSheet: HTMLCanvasElement | null = null;
 let yunaSheetLoading = false;
 let castSheetImage: HTMLImageElement | null = null;
+let roomBackgroundImage: HTMLImageElement | null = null;
 
 function getYunaSheet() {
   if (yunaSheet || yunaSheetLoading || typeof window === "undefined") return yunaSheet;
@@ -64,6 +65,19 @@ function getCastSheet() {
   image.src = "/assets/portraits/cast-emotions.png";
   image.onload = () => { castSheetImage = image; };
   castSheetImage = image;
+  return image.complete ? image : null;
+}
+
+function getRoomBackground() {
+  if (roomBackgroundImage)
+    return roomBackgroundImage.complete && roomBackgroundImage.naturalWidth
+      ? roomBackgroundImage
+      : null;
+  if (typeof window === "undefined") return null;
+  const image = new Image();
+  image.src = "/assets/backgrounds/yuna-room-hd.png";
+  image.onload = () => { roomBackgroundImage = image; };
+  roomBackgroundImage = image;
   return image.complete ? image : null;
 }
 
@@ -521,47 +535,96 @@ function drawRain(ctx: CanvasRenderingContext2D, frame: number) {
 }
 
 function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
-  box(ctx, "#121422", 0, 0, 320, 124);
-  box(ctx, "#2d222c", 0, 124, 320, 56);
-  dither(ctx, 0, 124, 320, 56, "#503943", 4);
-  for (let y = 8; y < 120; y += 12) {
-    box(ctx, "#252437", 0, y, 320, 1);
-    for (let x = (y / 12) % 2 ? 5 : 12; x < 320; x += 24)
-      box(ctx, "#36334a", x, y + 3, 1, 4);
-  }
-  outline(ctx, 22, 18, 105, 76, "#17131d", "#31455e", "#6b7588");
-  box(ctx, "#201925", 72, 19, 5, 74);
-  box(ctx, "#201925", 23, 55, 103, 5);
-  box(ctx, "#d17d37", 27, 23, 37, 5);
-  dither(ctx, 28, 29, 94, 58, "#8aa5b8", 5);
-  // A clearly readable lived-in bedroom: rug, bed, pillow, quilt and nightstand.
-  outline(ctx, 113, 141, 111, 25, "#1b1520", "#49354f", "#725269");
-  dither(ctx, 119, 146, 99, 14, "#a36f78", 5);
-  box(ctx, "#231923", 170, 108, 9, 55);
-  outline(ctx, 176, 116, 132, 47, "#1a141e", "#664356", "#9a6875");
-  box(ctx, "#7a4960", 179, 140, 126, 20);
-  dither(ctx, 181, 142, 122, 16, "#b67983", 5);
-  outline(ctx, 184, 120, 42, 17, "#251b25", "#d5c5b2", "#f3e7cf");
-  box(ctx, "#e9dcca", 189, 123, 29, 3);
-  outline(ctx, 148, 126, 25, 31, "#19131c", "#503849", "#79596b");
-  box(ctx, "#d49b48", 155, 116, 11, 10);
-  box(ctx, "#f0c970", 158, 108, 5, 9);
-  // Writing desk with family photograph and books reinforces the home setting.
-  drawTable(ctx, 25, 132, 90);
-  outline(ctx, 38, 111, 24, 18, "#17121b", "#765746", "#b58b65");
-  box(ctx, "#c9a879", 43, 115, 14, 9);
-  box(ctx, "#4c3542", 46, 116, 4, 6);
-  box(ctx, "#7f5961", 51, 116, 4, 6);
-  box(ctx, "#8b2944", 70, 122, 17, 4);
-  box(ctx, "#47657a", 72, 118, 15, 4);
-  // Wardrobe and closed bedroom door.
-  outline(ctx, 264, 39, 43, 71, "#17131d", "#493748", "#71566c");
-  box(ctx, "#312534", 284, 41, 3, 67);
-  box(ctx, "#c49b48", 290, 75, 3, 3);
-  box(ctx, "#211824", 270, 47, 9, 3);
-  box(ctx, "#211824", 291, 47, 9, 3);
-  // A small unfinished canvas remains, but no longer dominates the bedroom.
-  drawEasel(ctx, 128, 77);
+  // A lived-in bedroom: midnight-blue walls, warm wood and pools of amber light.
+  box(ctx, "#102b43", 0, 0, 320, 121);
+  dither(ctx, 0, 0, 320, 121, "#183a56", 7);
+  box(ctx, "#244b62", 0, 116, 320, 5);
+  box(ctx, "#173247", 0, 121, 320, 59);
+  for (let y = 126; y < 180; y += 9) box(ctx, "#29495b", 0, y, 320, 2);
+  for (let x = 0; x < 320; x += 32) box(ctx, "#102838", x, 122, 2, 58);
+
+  // Window with thick wooden trim, rainy glass and a distant sleeping town.
+  outline(ctx, 91, 12, 111, 75, "#08131e", "#244c68", "#a67843");
+  box(ctx, "#071a30", 97, 18, 99, 63);
+  box(ctx, "#e8c75b", 97, 18, 99, 3);
+  box(ctx, "#e8c75b", 97, 48, 99, 3);
+  box(ctx, "#e8c75b", 144, 18, 4, 63);
+  box(ctx, "#6f613d", 101, 70, 39, 3);
+  box(ctx, "#6f613d", 152, 70, 40, 3);
+  box(ctx, "#12243a", 172, 64, 8, 17);
+  box(ctx, "#172d43", 181, 57, 12, 24);
+  box(ctx, "#f2cf67", 184, 62, 2, 3);
+  box(ctx, "#e9be55", 175, 69, 2, 3);
+
+  // Warm light from the left hall and the bedside lamp falls in stepped pixels.
+  box(ctx, "#f1c75a", 0, 68, 8, 87);
+  box(ctx, "#ffe576", 8, 76, 5, 69);
+  box(ctx, "#f3c95c24", 13, 84, 74, 65);
+  box(ctx, "#e8a94c1f", 24, 92, 88, 48);
+
+  // Personal wall details: framed family drawing, shelf, plants and calendar.
+  outline(ctx, 15, 25, 34, 39, "#08131a", "#684c39", "#c0925c");
+  box(ctx, "#d9c58f", 20, 30, 24, 27);
+  box(ctx, "#ef7a52", 26, 39, 7, 9);
+  box(ctx, "#709b63", 34, 36, 6, 12);
+  box(ctx, "#6b4637", 59, 38, 55, 5);
+  box(ctx, "#9b6845", 63, 43, 47, 3);
+  box(ctx, "#8e5839", 69, 31, 13, 10);
+  box(ctx, "#57905d", 72, 22, 7, 10);
+  box(ctx, "#4c754c", 68, 25, 5, 7);
+  box(ctx, "#8e5839", 91, 30, 13, 11);
+  box(ctx, "#7652a1", 94, 22, 8, 9);
+  outline(ctx, 274, 18, 23, 27, "#09131a", "#d4c39b", "#f0dfb3");
+  box(ctx, "#bd594e", 278, 22, 15, 5);
+  box(ctx, "#635847", 280, 31, 3, 3);
+  box(ctx, "#635847", 286, 31, 3, 3);
+  box(ctx, "#635847", 280, 37, 3, 3);
+
+  // Wide floor rug and the oversized panda follow the reference room silhouette.
+  outline(ctx, 24, 133, 160, 39, "#0a1822", "#304c64", "#71869a");
+  box(ctx, "#52687f", 31, 139, 146, 27);
+  box(ctx, "#6f8296", 39, 143, 54, 3);
+  box(ctx, "#415a70", 105, 159, 58, 3);
+  // Large seated panda: round ears, head, belly, arms and paw pads.
+  box(ctx, "#171b21", 36, 82, 15, 15); box(ctx, "#171b21", 75, 82, 15, 15);
+  outline(ctx, 39, 87, 48, 40, "#0b1015", "#c9c8c2", "#eeeae0");
+  box(ctx, "#181c22", 46, 96, 10, 13); box(ctx, "#181c22", 70, 96, 10, 13);
+  box(ctx, "#f0c7bd", 48, 107, 6, 3); box(ctx, "#f0c7bd", 72, 107, 6, 3);
+  box(ctx, "#171b20", 61, 106, 6, 5); box(ctx, "#171b20", 62, 114, 6, 3);
+  box(ctx, "#181c21", 30, 116, 15, 28); box(ctx, "#181c21", 81, 116, 15, 28);
+  outline(ctx, 43, 123, 41, 29, "#0d1217", "#aaa9a5", "#d5d3cd");
+  box(ctx, "#181c21", 36, 143, 20, 12); box(ctx, "#181c21", 72, 143, 20, 12);
+  box(ctx, "#777a79", 41, 146, 4, 5); box(ctx, "#777a79", 48, 145, 4, 5);
+  box(ctx, "#777a79", 77, 145, 4, 5); box(ctx, "#777a79", 84, 146, 4, 5);
+
+  // Study desk with monitor, books, mug, PC and an acoustic guitar.
+  outline(ctx, 217, 94, 83, 9, "#071219", "#604b42", "#a57a59");
+  box(ctx, "#644c42", 221, 103, 6, 48); box(ctx, "#644c42", 290, 103, 6, 48);
+  outline(ctx, 232, 55, 47, 34, "#07131b", "#343f48", "#788897");
+  box(ctx, "#17232d", 237, 60, 37, 23);
+  box(ctx, "#526270", 240, 63, 22, 2);
+  box(ctx, "#414950", 252, 89, 7, 5);
+  box(ctx, "#323942", 240, 95, 36, 4);
+  box(ctx, "#d7c3a0", 278, 81, 9, 12); box(ctx, "#b16a49", 286, 84, 4, 6);
+  box(ctx, "#593f52", 284, 65, 15, 5); box(ctx, "#2f4659", 286, 59, 13, 6);
+  outline(ctx, 270, 107, 21, 44, "#071119", "#12171d", "#343b43");
+  box(ctx, "#d8a64d", 278, 115, 3, 3);
+  box(ctx, "#805434", 307, 58, 4, 70); box(ctx, "#bd7747", 301, 118, 16, 25);
+  box(ctx, "#d99a58", 304, 124, 10, 11); box(ctx, "#36251f", 307, 128, 4, 4);
+
+  // Desk chair, cables and scattered personal objects add the same lived-in clutter.
+  outline(ctx, 233, 114, 28, 32, "#081219", "#323b43", "#66717a");
+  box(ctx, "#394149", 240, 145, 5, 19); box(ctx, "#394149", 251, 145, 5, 19);
+  box(ctx, "#394149", 230, 163, 32, 3); box(ctx, "#394149", 229, 166, 6, 3); box(ctx, "#394149", 258, 166, 6, 3);
+  // Slime plush, alarm clock, game pad, sketchbook and paint swatches.
+  box(ctx, "#315f3c", 104, 136, 18, 10); box(ctx, "#4d824a", 108, 132, 10, 5);
+  box(ctx, "#d7da9a", 110, 138, 2, 2); box(ctx, "#d7da9a", 116, 138, 2, 2);
+  outline(ctx, 129, 135, 20, 12, "#09141b", "#222831", "#4b5159"); box(ctx, "#db8151", 136, 140, 4, 2);
+  box(ctx, "#20262d", 159, 136, 24, 7); box(ctx, "#68727a", 163, 134, 4, 3); box(ctx, "#68727a", 176, 134, 4, 3);
+  box(ctx, "#b9b3a1", 187, 157, 20, 14); box(ctx, "#313b48", 190, 160, 14, 8);
+  box(ctx, "#b9544e", 130, 154, 10, 7); box(ctx, "#4b8a69", 143, 158, 11, 7);
+  box(ctx, "#d38a45", 158, 153, 10, 7); box(ctx, "#397b6a", 171, 158, 12, 7);
+  box(ctx, "#202832", 148, 146, 3, 9); box(ctx, "#202832", 181, 146, 3, 10);
   if (tv) {
     // CRT casing, speaker grille, control light and a readable news studio.
     outline(ctx, 91, 23, 174, 108, "#090b11", "#242c38", "#657687");
@@ -597,8 +660,34 @@ function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
     for (let sy = 36; sy < 111; sy += 8) box(ctx, "#ffffff22", 104, sy, 137, 1);
     for (let sy = 42; sy < 111; sy += 8) box(ctx, "#111111", 250, sy, 8, 2);
     box(ctx, "#c52c42", 255, 118, 5, 5);
-  } else drawCharacter(ctx, { x: 218, y: 133 }, "down", frame % 3);
+  } else drawCharacter(ctx, { x: 197, y: 145 }, "down", frame % 3);
+  // Rain belongs outside: clip every drop to the glass instead of the whole room.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(97, 18, 99, 63);
+  ctx.clip();
   drawRain(ctx, frame);
+  drawRain(ctx, frame + 17);
+  ctx.restore();
+}
+
+function drawHighDensityRoom(ctx: CanvasRenderingContext2D, frame: number) {
+  const background = getRoomBackground();
+  if (!background) {
+    drawRoom(ctx, frame, false);
+    return;
+  }
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(background, 0, 0, 320, 180);
+  // Keep the generated background static while the glass carries live rain.
+  ctx.beginPath();
+  ctx.rect(77, 10, 116, 74);
+  ctx.clip();
+  drawRain(ctx, frame);
+  ctx.restore();
+  // Yuna remains a separate sprite layer so she is as crisp as in-game.
+  drawCharacter(ctx, { x: 174, y: 150 }, "down", frame % 3);
 }
 
 function drawPhone(ctx: CanvasRenderingContext2D, frame: number) {
@@ -689,10 +778,15 @@ export function renderOpening(
 ) {
   ctx.imageSmoothingEnabled = false;
   const frame = Math.floor(time / 160);
+  const scale = Math.max(1, ctx.canvas.width / 320);
+  ctx.save();
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
   box(ctx, "#05060b", 0, 0, 320, 180);
-  if (kind === "room" || kind === "tv") drawRoom(ctx, frame, kind === "tv");
+  if (kind === "room") drawHighDensityRoom(ctx, frame);
+  else if (kind === "tv") drawRoom(ctx, frame, true);
   else if (kind === "phone") drawPhone(ctx, frame);
   else drawSchool(ctx, frame);
+  ctx.restore();
 }
 
 export function renderTitle(ctx: CanvasRenderingContext2D, time: number) {
