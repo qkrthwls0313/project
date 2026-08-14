@@ -736,7 +736,7 @@ function Hud({
 }
 function Portrait(props: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
-  character: "yuna" | "seoa" | "minhyuk" | "klem";
+  character: "yuna" | "seoa" | "minhyuk" | "klem" | "announcer";
 }) {
   return <PixelPortrait {...props} />;
 }
@@ -752,7 +752,7 @@ function PixelPortrait({
   character,
 }: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
-  character: "yuna" | "seoa" | "minhyuk" | "klem";
+  character: "yuna" | "seoa" | "minhyuk" | "klem" | "announcer";
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -769,19 +769,23 @@ function PixelPortrait({
         ? "#b75972"
         : character === "minhyuk"
           ? "#6b4a38"
-          : character === "klem"
-            ? "#c6c0b4"
-            : mood === "insane"
-              ? "#346079"
-              : "#83aec8";
+          : character === "announcer"
+            ? "#293b55"
+            : character === "klem"
+              ? "#c6c0b4"
+              : mood === "insane"
+                ? "#346079"
+                : "#83aec8";
     const hairShadow =
       character === "seoa"
         ? "#713449"
         : character === "minhyuk"
           ? "#3f2a25"
-          : character === "klem"
-            ? "#716b6b"
-            : "#346079";
+          : character === "announcer"
+            ? "#17243a"
+            : character === "klem"
+              ? "#716b6b"
+              : "#346079";
     x.fillStyle = hair;
     x.fillRect(14, 5, 36, 8);
     x.fillRect(9, 10, 13, 32);
@@ -812,9 +816,11 @@ function PixelPortrait({
         ? "#713649"
         : character === "minhyuk"
           ? "#765036"
-          : character === "klem"
-            ? "#292433"
-            : "#3c2d51";
+          : character === "announcer"
+            ? "#334f72"
+            : character === "klem"
+              ? "#292433"
+              : "#3c2d51";
     x.fillRect(13, 52, 38, 28);
     x.fillStyle = "#756194";
     x.fillRect(17, 54, 30, 4);
@@ -1183,22 +1189,34 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
         key={beat}
         className="cutscene-dialog absolute inset-x-0 bottom-0 z-30 p-4 sm:p-10"
       >
-        <div className="mx-auto max-w-4xl border-t border-white/25 bg-black/65 p-5 backdrop-blur-sm sm:p-7">
-          <p className="mb-3 text-[10px] tracking-[.28em] text-amber-300">
-            {b.place}
-          </p>
-          {b.speaker && (
-            <p
-              className={`mb-2 text-sm font-black ${b.tone === "danger" ? "text-red-400" : b.tone === "news" ? "text-cyan-300" : "text-white"}`}
-            >
-              {b.speaker}
+        <div className="opening-dialogue pixel-dialogue relative mx-auto max-w-5xl">
+          <Portrait
+            character={
+              b.speaker === "서아"
+                ? "seoa"
+                : b.speaker === "NEWS" || b.speaker === "아나운서"
+                  ? "announcer"
+                  : "yuna"
+            }
+            mood={
+              b.tone === "danger"
+                ? "terrified"
+                : b.scene >= 2
+                  ? "suspicious"
+                  : "neutral"
+            }
+          />
+          <div className="pixel-dialogue-copy">
+            <p className="mb-2 text-[10px] tracking-[.28em] text-amber-300">
+              {b.place}
             </p>
-          )}
-          <p
-            className={`max-w-3xl text-sm leading-7 sm:text-lg sm:leading-9 ${b.tone === "danger" ? "cutscene-type text-red-200" : ""}`}
-          >
-            {b.text}
-          </p>
+            <b className="pixel-speaker">{b.speaker || "유나"}</b>
+            <p
+              className={`max-w-3xl text-sm leading-7 sm:text-lg sm:leading-9 ${b.tone === "danger" ? "cutscene-type text-red-200" : ""}`}
+            >
+              {b.text}
+            </p>
+          </div>
           <p className="mt-4 text-right text-[10px] tracking-widest text-white/40">
             클릭 / SPACE 다음 ▶
           </p>
@@ -1244,10 +1262,9 @@ function TitleScreen({
   hasSave: boolean;
 }) {
   return (
-    <main className="noise relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_35%,#35224c_0,#111326_45%,#060812_100%)] p-6">
-      <div className="absolute -left-20 top-16 h-52 w-52 rotate-12 rounded-full bg-rose-500/10 blur-3xl" />
+    <main className="pixel-title-screen relative flex min-h-screen items-center justify-center overflow-hidden p-6">
       <div className="relative z-10 w-full max-w-3xl text-center">
-        <div className="mx-auto mb-8 grid h-24 w-24 rotate-3 grid-cols-3 gap-1 border-4 border-[#f3e6c9] bg-[#eee0c1] p-3 shadow-[10px_10px_0_#57182c]">
+        <div className="pixel-title-emblem mx-auto mb-8 grid h-24 w-24 grid-cols-3 gap-1 border-4 border-[#f3e6c9] bg-[#eee0c1] p-3 shadow-[10px_10px_0_#57182c]">
           <i className="bg-red-500" />
           <i className="bg-amber-300" />
           <i className="bg-emerald-400" />
@@ -1279,14 +1296,14 @@ function TitleScreen({
         <div className="mt-10 flex flex-col items-center gap-3">
           <button
             onClick={onStart}
-            className="pulse-red w-56 border-2 border-rose-400 bg-rose-600 px-7 py-3 font-black tracking-[.25em] hover:bg-rose-500"
+            className="pixel-menu-button pixel-menu-pink w-64 px-7 py-4 font-black tracking-[.25em]"
           >
             새 게임
           </button>
           <button
             disabled={!hasSave}
             onClick={onLoad}
-            className="w-56 border border-white/20 bg-white/5 px-7 py-3 text-sm tracking-[.2em] enabled:hover:bg-white/10 disabled:opacity-30"
+            className="pixel-menu-button pixel-menu-blue w-64 px-7 py-4 text-sm font-black tracking-[.2em]"
           >
             이어하기
           </button>
