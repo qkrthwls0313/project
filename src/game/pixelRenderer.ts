@@ -671,10 +671,52 @@ function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
   ctx.restore();
 }
 
-function drawHighDensityRoom(ctx: CanvasRenderingContext2D, frame: number) {
+function drawTelevisionOverlay(ctx: CanvasRenderingContext2D, frame: number) {
+  // CRT casing, speaker grille, control light and a readable news studio.
+  outline(ctx, 91, 23, 174, 108, "#090b11", "#242c38", "#657687");
+  outline(ctx, 101, 30, 144, 86, "#080b12", "#2d5871", "#85b6c5");
+  for (let i = 0; i < 52; i++)
+    box(
+      ctx,
+      i % 3 ? "#a9cdd6" : "#315d71",
+      104 + ((i * 37 + frame * 9) % 138),
+      33 + ((i * 19) % 78), 1, 1,
+    );
+  box(ctx, "#19354b", 104, 33, 138, 56);
+  box(ctx, "#446c85", 106, 35, 134, 4);
+  const announcer = getCastSheet();
+  if (announcer) {
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(announcer, 1068, 0, 356, 355, 145, 38, 59, 53);
+    ctx.restore();
+  } else {
+    box(ctx, "#1d2633", 153, 47, 43, 42);
+    box(ctx, "#d6aa98", 160, 48, 29, 22);
+  }
+  box(ctx, "#10151f", 112, 83, 119, 6);
+  box(ctx, "#c5bca7", 211, 67, 2, 17);
+  box(ctx, "#1b1720", 207, 64, 10, 5);
+  box(ctx, "#a91633", 104, 89, 138, 15);
+  ctx.fillStyle = "#fff1d2";
+  ctx.font = "bold 7px monospace";
+  ctx.fillText("BREAKING NEWS", 110, 99);
+  box(ctx, "#09121b", 104, 104, 138, 9);
+  box(ctx, "#d9e3df", 110, 107, 102, 2);
+  for (let sy = 36; sy < 111; sy += 8) box(ctx, "#ffffff22", 104, sy, 137, 1);
+  for (let sy = 42; sy < 111; sy += 8) box(ctx, "#111111", 250, sy, 8, 2);
+  box(ctx, "#c52c42", 255, 118, 5, 5);
+}
+
+function drawHighDensityRoom(
+  ctx: CanvasRenderingContext2D,
+  frame: number,
+  television = false,
+  showYuna = true,
+) {
   const background = getRoomBackground();
   if (!background) {
-    drawRoom(ctx, frame, false);
+    drawRoom(ctx, frame, television);
     return;
   }
   ctx.save();
@@ -686,15 +728,17 @@ function drawHighDensityRoom(ctx: CanvasRenderingContext2D, frame: number) {
   ctx.clip();
   drawRain(ctx, frame);
   ctx.restore();
-  // Yuna remains a separate sprite layer so she is as crisp as in-game.
-  drawCharacter(ctx, { x: 174, y: 150 }, "down", frame % 3);
+  if (television) drawTelevisionOverlay(ctx, frame);
+  else if (showYuna) {
+    // Yuna remains a separate sprite layer so she is as crisp as in-game.
+    drawCharacter(ctx, { x: 174, y: 150 }, "down", frame % 3);
+  }
 }
 
 function drawPhone(ctx: CanvasRenderingContext2D, frame: number) {
-  box(ctx, "#100a14", 0, 0, 320, 180);
-  dither(ctx, 0, 0, 320, 180, "#351421", 6);
-  box(ctx, "#22131e", 20, 20, 74, 138);
-  drawTable(ctx, 12, 132, 82);
+  // The room remains visible while the phone takes focus as a modal overlay.
+  box(ctx, "#07050bb8", 0, 0, 320, 180);
+  dither(ctx, 0, 0, 320, 180, "#4a173066", 9);
   outline(
     ctx,
     102 + (frame % 2),
@@ -783,8 +827,11 @@ export function renderOpening(
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
   box(ctx, "#05060b", 0, 0, 320, 180);
   if (kind === "room") drawHighDensityRoom(ctx, frame);
-  else if (kind === "tv") drawRoom(ctx, frame, true);
-  else if (kind === "phone") drawPhone(ctx, frame);
+  else if (kind === "tv") drawHighDensityRoom(ctx, frame, true);
+  else if (kind === "phone") {
+    drawHighDensityRoom(ctx, frame, false, false);
+    drawPhone(ctx, frame);
+  }
   else drawSchool(ctx, frame);
   ctx.restore();
 }
