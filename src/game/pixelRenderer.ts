@@ -534,14 +534,34 @@ function drawRoom(ctx: CanvasRenderingContext2D, frame: number, tv: boolean) {
   box(ctx, "#201925", 23, 55, 103, 5);
   box(ctx, "#d17d37", 27, 23, 37, 5);
   dither(ctx, 28, 29, 94, 58, "#8aa5b8", 5);
-  outline(ctx, 192, 128, 110, 27, "#1c1720", "#50384d", "#735168");
-  outline(ctx, 250, 115, 38, 17, "#251b25", "#cbb69f", "#efe1c8");
-  drawEasel(ctx, 141, 48);
+  // A clearly readable lived-in bedroom: rug, bed, pillow, quilt and nightstand.
+  outline(ctx, 113, 141, 111, 25, "#1b1520", "#49354f", "#725269");
+  dither(ctx, 119, 146, 99, 14, "#a36f78", 5);
+  box(ctx, "#231923", 170, 108, 9, 55);
+  outline(ctx, 176, 116, 132, 47, "#1a141e", "#664356", "#9a6875");
+  box(ctx, "#7a4960", 179, 140, 126, 20);
+  dither(ctx, 181, 142, 122, 16, "#b67983", 5);
+  outline(ctx, 184, 120, 42, 17, "#251b25", "#d5c5b2", "#f3e7cf");
+  box(ctx, "#e9dcca", 189, 123, 29, 3);
+  outline(ctx, 148, 126, 25, 31, "#19131c", "#503849", "#79596b");
+  box(ctx, "#d49b48", 155, 116, 11, 10);
+  box(ctx, "#f0c970", 158, 108, 5, 9);
+  // Writing desk with family photograph and books reinforces the home setting.
   drawTable(ctx, 25, 132, 90);
-  outline(ctx, 274, 58, 28, 53, "#1a151e", "#493748", "#71566c");
-  box(ctx, "#d8aa42", 281, 64, 12, 12);
-  dither(ctx, 278, 61, 19, 20, "#e9c967", 3);
-  box(ctx, "#352431", 286, 80, 3, 30);
+  outline(ctx, 38, 111, 24, 18, "#17121b", "#765746", "#b58b65");
+  box(ctx, "#c9a879", 43, 115, 14, 9);
+  box(ctx, "#4c3542", 46, 116, 4, 6);
+  box(ctx, "#7f5961", 51, 116, 4, 6);
+  box(ctx, "#8b2944", 70, 122, 17, 4);
+  box(ctx, "#47657a", 72, 118, 15, 4);
+  // Wardrobe and closed bedroom door.
+  outline(ctx, 264, 39, 43, 71, "#17131d", "#493748", "#71566c");
+  box(ctx, "#312534", 284, 41, 3, 67);
+  box(ctx, "#c49b48", 290, 75, 3, 3);
+  box(ctx, "#211824", 270, 47, 9, 3);
+  box(ctx, "#211824", 291, 47, 9, 3);
+  // A small unfinished canvas remains, but no longer dominates the bedroom.
+  drawEasel(ctx, 128, 77);
   if (tv) {
     // CRT casing, speaker grille, control light and a readable news studio.
     outline(ctx, 91, 23, 174, 108, "#090b11", "#242c38", "#657687");

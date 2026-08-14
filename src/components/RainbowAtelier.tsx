@@ -145,6 +145,7 @@ export default function RainbowAtelier() {
     [light, setLight] = useState(true),
     [inventory, setInventory] = useState(false),
     [paused, setPaused] = useState(false),
+    [recordOpen, setRecordOpen] = useState(false),
     [mixing, setMixing] = useState(false),
     [hiding, setHiding] = useState(false),
     [horrorCut, setHorrorCut] = useState<"seoa" | "klem" | null>(null),
@@ -210,6 +211,7 @@ export default function RainbowAtelier() {
   }, [beep]);
   const start = useCallback((load = false) => {
     setPaused(false);
+    setRecordOpen(false);
     setInventory(false);
     setMixing(false);
     setHiding(false);
@@ -247,6 +249,7 @@ export default function RainbowAtelier() {
     enemy.current = { x: 650, y: 90 };
   }, []);
   const interact = useCallback(() => {
+    if (recordOpen) return;
     if (dialogRef.current.length) {
       if (line < dialogRef.current.length - 1) setLine((v) => v + 1);
       else setDialog([]);
@@ -258,7 +261,7 @@ export default function RainbowAtelier() {
     if (fl === "1F") {
       if (x > 65 && x < 195 && y > 275 && !f.includes("note")) {
         addFlag("note");
-        speak(dialogues.note);
+        setRecordOpen(true);
         beep("pickup");
       } else if (x > 585 && y < 165 && !f.includes("key")) {
         addFlag("key");
@@ -364,11 +367,19 @@ export default function RainbowAtelier() {
         setScene("ending");
       }
     }
-  }, [addFlag, beep, line, speak, warp]);
+  }, [addFlag, beep, line, recordOpen, speak, warp]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (scene !== "game") return;
+      if (recordOpen) {
+        if (e.key === "Escape" || e.key === " " || e.key.toLowerCase() === "z") {
+          e.preventDefault();
+          setRecordOpen(false);
+          speak(dialogues.note);
+        }
+        return;
+      }
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
       )
@@ -389,7 +400,7 @@ export default function RainbowAtelier() {
       removeEventListener("keydown", down);
       removeEventListener("keyup", up);
     };
-  }, [interact, scene]);
+  }, [interact, recordOpen, scene, speak]);
 
   useEffect(() => {
     if (scene !== "game") return;
@@ -407,6 +418,7 @@ export default function RainbowAtelier() {
         !mixing &&
         !hiding &&
         !horrorCut &&
+        !recordOpen &&
         !dialogRef.current.length
       ) {
         let dx = 0,
@@ -457,7 +469,7 @@ export default function RainbowAtelier() {
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [scene, paused, inventory, mixing, hiding, horrorCut, light, beep]);
+  }, [scene, paused, inventory, mixing, hiding, horrorCut, recordOpen, light, beep]);
 
   const draw = useCallback(() => {
     const c = canvas.current;
@@ -536,16 +548,17 @@ export default function RainbowAtelier() {
   const distorted = sanity < 40;
   return (
     <main
-      className={`min-h-screen bg-[#090b17] px-3 py-5 lg:px-8 ${distorted ? "glitch" : ""}`}
+      className={`game-page min-h-screen bg-[#090b17] px-3 py-5 lg:px-8 ${distorted ? "glitch" : ""}`}
     >
-      <div className="mx-auto max-w-[1180px]">
-        <header className="mb-4 flex items-end justify-between gap-4">
-          <div>
+      <div className="game-shell mx-auto max-w-[1180px]">
+        <header className="game-header mb-4 flex items-end justify-between gap-4">
+          <div className="game-brand">
             <p className="text-[10px] tracking-[.35em] text-rose-400">
               THE RAINBOW ATELIER
             </p>
-            <h1 className="mt-1 text-xl font-black sm:text-2xl">
-              무지개빛 미술학원
+            <h1 className="game-mini-logo mt-1" aria-label="무지개빛 미술학원">
+              <span className="mini-rainbow"><i>무</i><i>지</i><i>개</i><i>빛</i></span>
+              <span className="mini-horror">미술학원</span>
             </h1>
           </div>
           <div className="text-right text-xs text-slate-400">
@@ -557,7 +570,7 @@ export default function RainbowAtelier() {
           </div>
         </header>
         <section
-          className={`relative overflow-hidden border-4 border-[#272b42] bg-black shadow-2xl crt ${flash ? "glitch" : ""}`}
+          className={`game-stage relative overflow-hidden border-4 border-[#272b42] bg-black shadow-2xl crt ${flash ? "glitch" : ""}`}
         >
           <canvas
             ref={canvas}
@@ -690,6 +703,33 @@ export default function RainbowAtelier() {
               }}
             />
           )}
+          {recordOpen && (
+            <DutyRecord
+              close={() => {
+                setRecordOpen(false);
+                speak(dialogues.note);
+              }}
+            />
+          )}
+          {dialog.length === 0 && !inventory && !mixing && !hiding && !paused && !recordOpen && (
+            <div className="mobile-game-controls">
+              <Dpad move={moveTouch} />
+              <div className="mobile-action-pad">
+                <button onPointerDown={interact} className="mobile-action mobile-action-main">
+                  <b>Z</b><span>조사</span>
+                </button>
+                <button onClick={() => setLight((v) => !v)} className="mobile-action">
+                  <b>F</b><span>손전등</span>
+                </button>
+                <button onClick={() => setInventory(true)} className="mobile-action">
+                  <b>I</b><span>가방</span>
+                </button>
+                <button onClick={() => setPaused(true)} className="mobile-action">
+                  <b>Ⅱ</b><span>메뉴</span>
+                </button>
+              </div>
+            </div>
+          )}
           {paused && (
             <Pause
               save={save}
@@ -700,6 +740,7 @@ export default function RainbowAtelier() {
                 setMixing(false);
                 setHiding(false);
                 setHorrorCut(null);
+                setRecordOpen(false);
                 setDialog([]);
                 keys.current.clear();
                 setScene("title");
@@ -707,20 +748,11 @@ export default function RainbowAtelier() {
             />
           )}
         </section>
-        <footer className="mt-4 grid gap-3 text-xs text-slate-400 md:grid-cols-[1fr_auto]">
+        <footer className="game-footer mt-4 grid gap-3 text-xs text-slate-400 md:grid-cols-[1fr_auto]">
           <p>
             방향키 / WASD 이동 · Shift 달리기 · Z / Space 조사 · F 손전등 · I /
             Tab 가방 · ESC 메뉴
           </p>
-          <div className="flex items-center justify-center gap-2 md:hidden">
-            <Dpad move={moveTouch} />
-            <button
-              onPointerDown={interact}
-              className="h-14 w-14 rounded-full border-2 border-rose-400 bg-rose-500/20 font-black text-rose-200"
-            >
-              Z
-            </button>
-          </div>
           <p className="text-right text-slate-600">
             ESC 메뉴에서 저장 · 광기 0% 시 BAD ENDING
           </p>
@@ -758,9 +790,14 @@ function Hud({
 function Portrait(props: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
   character: "yuna" | "seoa" | "minhyuk" | "klem" | "announcer";
+  clean?: boolean;
 }) {
+  const safeMood =
+    props.clean && (props.mood === "terrified" || props.mood === "insane")
+      ? "suspicious"
+      : props.mood;
   const moodIndex =
-    props.mood === "neutral" ? 0 : props.mood === "suspicious" ? 1 : 2;
+    safeMood === "neutral" ? 0 : safeMood === "suspicious" ? 1 : 2;
   const castIndex = {
     yuna: 0,
     seoa: 0,
@@ -774,8 +811,8 @@ function Portrait(props: {
   return (
     <div
       role="img"
-      aria-label={`${props.character} ${props.mood} 대화 초상`}
-      className={`dialogue-portrait portrait-sprite ${isYuna ? "portrait-yuna" : "portrait-cast"} ${props.mood === "insane" ? "glitch" : ""}`}
+      aria-label={`${props.character} ${props.mood}${props.clean ? " clean" : ""} 대화 초상`}
+      className={`dialogue-portrait portrait-sprite ${isYuna ? "portrait-yuna" : "portrait-cast"} ${props.clean ? "portrait-clean-fear" : ""} ${!props.clean && props.mood === "insane" ? "glitch" : ""}`}
       style={{ backgroundPosition: `${x}% ${y}%` }}
     />
   );
@@ -1383,6 +1420,7 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
       >
         <div className="opening-dialogue pixel-dialogue relative mx-auto max-w-5xl">
           <Portrait
+            clean
             character={
               b.speaker === "서아"
                 ? "seoa"
@@ -1739,6 +1777,41 @@ function HideQTE({ done }: { done: (success: boolean) => void }) {
     </div>
   );
 }
+function DutyRecord({ close }: { close: () => void }) {
+  return (
+    <div className="duty-record-backdrop absolute inset-0 z-50 flex items-center justify-center">
+      <div className="duty-record-window">
+        <div className="duty-paper-fold" aria-hidden="true" />
+        <div className="duty-record-paper">
+          <div className="duty-record-heading">
+            <span>무지개 미술학원</span>
+            <b>야간 당직 기록지</b>
+            <small>시설 보안 관리 문서 · 외부 반출 금지</small>
+          </div>
+          <div className="duty-record-fields">
+            <p><b>일자</b><span>20XX년 06월 14일</span><b>당직자</b><span>한도윤 원장</span></p>
+            <p><b>시간</b><span>22:00</span><b>구역</b><span>지하 스터디룸</span></p>
+          </div>
+          <div className="duty-record-grid" role="img" aria-label="붉은 얼룩이 묻은 야간 당직 기록 내용">
+            <div><b>21:30</b><span>1층 출입문 및 창문 잠금 확인</span><i>완료</i></div>
+            <div><b>21:50</b><span>수강생 전원 귀가 확인</span><i>완료</i></div>
+            <div className="is-red"><b>22:00</b><span>지하 스터디룸 ‘붉은 물감’ 점검</span><i>진행</i></div>
+          </div>
+          <div className="duty-record-note">
+            <b>특이사항</b>
+            <p>지하 출입 열쇠는 <em>1층 원장실 액자 뒤</em>에 보관할 것.</p>
+            <p className="record-scribble">아이들은 색을 기억한다.</p>
+          </div>
+          <div className="duty-record-stamp" aria-hidden="true">확인<br />院長</div>
+          <span className="duty-blood blood-one" aria-hidden="true" />
+          <span className="duty-blood blood-two" aria-hidden="true" />
+        </div>
+        <button onClick={close} className="duty-record-close">기록 확인 · 닫기</button>
+      </div>
+    </div>
+  );
+}
+
 function Pause({
   save,
   close,
@@ -1788,13 +1861,14 @@ function Dpad({ move }: { move: (d: Dir, on: boolean) => void }) {
       onPointerDown={() => move(d, true)}
       onPointerUp={() => move(d, false)}
       onPointerCancel={() => move(d, false)}
-      className="h-9 w-9 border border-white/25 bg-white/10"
+      onPointerLeave={() => move(d, false)}
+      className="mobile-dpad-button"
     >
       {s}
     </button>
   );
   return (
-    <div className="grid grid-cols-3">
+    <div className="mobile-dpad grid grid-cols-3">
       <i />
       <B d="up" s="▲" />
       <i />
