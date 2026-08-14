@@ -924,10 +924,18 @@ button:disabled {
   z-index: 2;
   display: block;
   width: 120px;
-  height: 150px;
+  height: 180px;
   border: 0;
   background: transparent;
   filter: drop-shadow(5px 0 0 #08060d) drop-shadow(-3px 0 0 #08060d);
+}
+
+.dialogue-portrait-art {
+  object-fit: cover;
+  object-position: center top;
+  background: #050712;
+  border: 2px solid #11101a;
+  box-shadow: inset 0 0 0 2px #394258;
 }
 
 .pixel-dialogue-copy {
@@ -985,7 +993,7 @@ input[type="range"] {
   .dialogue-portrait {
     left: 6px;
     width: 82px;
-    height: 103px;
+    height: 123px;
   }
   .pixel-speaker {
     margin-top: -27px;
@@ -1001,7 +1009,7 @@ input[type="range"] {
   left: 18px;
   bottom: 4px;
   width: 220px;
-  height: 275px;
+  height: 330px;
   filter: drop-shadow(7px 0 0 #08060d) drop-shadow(-4px 0 0 #08060d);
 }
 
@@ -1144,7 +1152,7 @@ section > div[class*="inset-10"] {
   .opening-dialogue .dialogue-portrait {
     left: 4px;
     width: 108px;
-    height: 135px;
+    height: 162px;
   }
   .pixel-menu-button {
     min-height: 54px;

@@ -2,6 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { renderGame, renderOpening } from "@/game/pixelRenderer";
 
 type Scene = "title" | "opening" | "game" | "ending";
@@ -738,6 +739,19 @@ function Portrait(props: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
   character: "yuna" | "seoa" | "minhyuk" | "klem" | "announcer";
 }) {
+  if (props.character === "yuna") {
+    return (
+      <Image
+        src="/assets/portraits/yuna-dialogue.png"
+        alt={`유나 ${props.mood} 대화 초상`}
+        width={1024}
+        height={1536}
+        priority
+        unoptimized
+        className={`dialogue-portrait dialogue-portrait-art ${props.mood === "insane" ? "glitch" : ""}`}
+      />
+    );
+  }
   return <PixelPortrait {...props} />;
 }
 function HorrorCutscene(props: {
@@ -746,6 +760,147 @@ function HorrorCutscene(props: {
   onComplete: () => void;
 }) {
   return <PixelHorrorCutscene {...props} />;
+}
+
+function drawDetailedYunaPortrait(
+  x: CanvasRenderingContext2D,
+  mood: "neutral" | "suspicious" | "terrified" | "insane",
+) {
+  const r = (c: string, px: number, py: number, w: number, h: number) => {
+    x.fillStyle = c;
+    x.fillRect(px, py, w, h);
+  };
+  x.clearRect(0, 0, 128, 192);
+  const edge = "#100e19",
+    hairDark = mood === "insane" ? "#264c64" : "#365f83";
+  const hair = mood === "insane" ? "#4b7891" : "#78add0",
+    hairLight = "#b8d9e7";
+  const skin = "#dba998",
+    skinLight = "#f2c8b4",
+    skinShade = "#a96f72";
+  // Stepped hair silhouette and neck outline.
+  [
+    [38, 5, 52, 4],
+    [27, 9, 73, 5],
+    [19, 14, 89, 7],
+    [14, 21, 99, 12],
+    [10, 33, 108, 30],
+    [8, 55, 111, 33],
+    [11, 83, 103, 23],
+    [17, 104, 91, 18],
+  ].forEach((v) => r(edge, ...(v as [number, number, number, number])));
+  [
+    [40, 8, 47, 5],
+    [29, 13, 68, 6],
+    [22, 18, 82, 8],
+    [17, 26, 93, 15],
+    [14, 39, 98, 25],
+    [12, 62, 101, 20],
+    [16, 81, 93, 20],
+    [22, 99, 80, 15],
+  ].forEach((v) => r(hairDark, ...(v as [number, number, number, number])));
+  // Face with pixel-stepped jaw.
+  r(edge, 29, 35, 71, 62);
+  r(edge, 34, 94, 61, 12);
+  r(skin, 33, 39, 63, 56);
+  r(skin, 38, 94, 53, 8);
+  r(skinLight, 37, 43, 48, 7);
+  r(skinShade, 34, 79, 5, 15);
+  r(skinShade, 90, 68, 5, 24);
+  // Layered side bangs.
+  [
+    [18, 29, 35, 8],
+    [20, 35, 29, 10],
+    [25, 43, 21, 14],
+    [39, 18, 18, 39],
+    [51, 14, 17, 44],
+    [65, 17, 18, 39],
+    [78, 23, 20, 31],
+    [92, 31, 17, 25],
+  ].forEach((v, i) =>
+    r(
+      i % 3 === 0 ? hairLight : hair,
+      ...(v as [number, number, number, number]),
+    ),
+  );
+  r(hairDark, 20, 50, 12, 48);
+  r(hair, 14, 60, 16, 37);
+  r(hairLight, 17, 62, 4, 25);
+  r(hairDark, 96, 48, 14, 49);
+  r(hair, 101, 55, 14, 38);
+  r(hairLight, 106, 60, 3, 22);
+  // Brows, eyes, lashes, highlights.
+  r("#4d354d", 39, 56, 18, 3);
+  r("#4d354d", 73, 56, 18, 3);
+  r(edge, 37, 63, 22, 10);
+  r(edge, 71, 63, 22, 10);
+  r("#f7e9df", 40, 65, 16, 7);
+  r("#f7e9df", 74, 65, 16, 7);
+  r("#65439a", 45, 64, 9, 10);
+  r("#65439a", 78, 64, 9, 10);
+  r("#261c42", 48, 66, 6, 8);
+  r("#261c42", 78, 66, 6, 8);
+  r("#ffffff", 47, 65, 3, 3);
+  r("#ffffff", 82, 65, 3, 3);
+  r(edge, 35, 61, 7, 3);
+  r(edge, 88, 61, 7, 3);
+  // Nose, mouth and mood marks.
+  r(skinShade, 64, 75, 3, 5);
+  r(
+    mood === "insane" ? "#b5193b" : "#7d3f50",
+    58,
+    86,
+    mood === "terrified" ? 17 : 12,
+    3,
+  );
+  if (mood !== "neutral") {
+    r("#7ea9bd", 98, 70, 3, 9);
+    r("#b9dce5", 98, 70, 2, 5);
+  }
+  if (mood === "insane") {
+    r("#b00031", 31, 74, 7, 2);
+    r("#b00031", 88, 80, 9, 2);
+  }
+  // Gold hairpin.
+  r("#3e2a16", 91, 31, 18, 4);
+  r("#3e2a16", 98, 24, 4, 18);
+  r("#e1ad2f", 92, 32, 16, 3);
+  r("#e1ad2f", 99, 25, 3, 16);
+  // Neck, shoulders, cardigan silhouette.
+  r(edge, 49, 101, 30, 24);
+  r(skin, 53, 100, 23, 25);
+  r(edge, 24, 119, 81, 12);
+  r(edge, 14, 129, 101, 63);
+  r("#38284f", 27, 122, 74, 14);
+  r("#4f3970", 19, 132, 93, 60);
+  r("#705695", 25, 136, 24, 52);
+  r("#2a203d", 83, 137, 24, 55);
+  // White collar and gold ribbon.
+  r(edge, 43, 116, 43, 28);
+  r("#eee4d8", 46, 119, 17, 19);
+  r("#eee4d8", 67, 119, 16, 19);
+  r("#c89322", 60, 132, 12, 13);
+  r("#e2b238", 63, 136, 7, 49);
+  r("#8e6218", 59, 142, 4, 38);
+  // Sleeves, hands and folds.
+  r(edge, 8, 145, 23, 47);
+  r("#4a3569", 12, 148, 20, 44);
+  r(edge, 98, 144, 24, 48);
+  r("#38284f", 101, 148, 18, 44);
+  r(edge, 41, 151, 18, 31);
+  r(skin, 44, 154, 13, 25);
+  r(edge, 72, 158, 17, 27);
+  r(skin, 75, 161, 11, 21);
+  r("#8d6cac", 30, 151, 5, 28);
+  r("#6d528e", 92, 151, 5, 30);
+  r("#241b36", 35, 173, 16, 4);
+  r("#241b36", 84, 177, 13, 4);
+  // Clustered fabric dithering and crisp rim light.
+  for (let py = 139; py < 190; py += 7)
+    for (let px = 23 + (py % 2); px < 108; px += 11) r("#8065a1", px, py, 2, 2);
+  r("#b5d7e5", 26, 20, 27, 3);
+  r("#b5d7e5", 16, 44, 4, 28);
+  r("#6b94ad", 107, 72, 3, 20);
 }
 function PixelPortrait({
   mood,
@@ -759,6 +914,11 @@ function PixelPortrait({
     const x = ref.current?.getContext("2d");
     if (!x) return;
     x.imageSmoothingEnabled = false;
+    if (character === "yuna") {
+      drawDetailedYunaPortrait(x, mood);
+      return;
+    }
+    x.setTransform(2, 0, 0, 2, 0, 0);
     x.clearRect(0, 0, 64, 80);
     x.fillStyle = "#17131d";
     x.fillRect(14, 7, 36, 4);
@@ -845,8 +1005,8 @@ function PixelPortrait({
   return (
     <canvas
       ref={ref}
-      width={64}
-      height={80}
+      width={128}
+      height={192}
       aria-label={`${character} ${mood} 픽셀 초상`}
       className={`dialogue-portrait pixel-art-canvas ${mood === "insane" ? "glitch" : ""}`}
     />
