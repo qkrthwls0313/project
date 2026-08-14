@@ -850,3 +850,144 @@ main > .pointer-events-none.absolute.inset-0 {
     opacity: 0;
   }
 }
+
+/* Shared RPG pixel UI system */
+button,
+input,
+[role="dialog"] {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+button {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  border-color: #766b78 #241d2a #241d2a #766b78 !important;
+  background-color: #171521;
+  box-shadow:
+    inset 2px 2px 0 #3c3547,
+    4px 4px 0 #05050a;
+  color: #f5e8d0;
+  font-family: ui-monospace, "Malgun Gothic", monospace;
+  text-shadow: 2px 2px 0 #05050a;
+  transition: none !important;
+}
+
+button:hover:not(:disabled),
+button:focus-visible {
+  border-color: #e0c66c #57441f #57441f #e0c66c !important;
+  background-color: #30283b;
+  color: #fff2b4;
+  outline: 2px solid #0a0810;
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 2px 2px 0 #19151e,
+    2px 2px 0 #05050a;
+}
+
+button:disabled {
+  filter: grayscale(1);
+  opacity: 0.42;
+}
+
+.pixel-dialogue {
+  display: block;
+  overflow: visible !important;
+  padding: 15px 18px 15px 148px !important;
+  border: 4px solid #17131b !important;
+  outline: 2px solid #e0cf9e;
+  outline-offset: -6px;
+  background-color: #100d18 !important;
+  box-shadow:
+    inset 0 -5px 0 #08060d,
+    inset 0 5px 0 #30283a,
+    7px 7px 0 #05050a !important;
+  color: #f6ead7;
+  text-shadow: 2px 2px 0 #05050a;
+}
+
+.pixel-dialogue:hover,
+.pixel-dialogue:focus-visible {
+  background-color: #100d18 !important;
+  border-color: #17131b !important;
+  color: #f6ead7;
+}
+
+.dialogue-portrait {
+  position: absolute;
+  left: 16px;
+  bottom: 5px;
+  z-index: 2;
+  display: block;
+  width: 120px;
+  height: 150px;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(5px 0 0 #08060d) drop-shadow(-3px 0 0 #08060d);
+}
+
+.pixel-dialogue-copy {
+  display: flex;
+  min-height: 76px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pixel-speaker {
+  display: block;
+  width: max-content;
+  min-width: 84px;
+  margin: -31px 0 8px -4px;
+  padding: 3px 12px 4px;
+  border: 2px solid #d4bd70;
+  background: #34283c;
+  color: #ffe58a;
+  font:
+    900 12px/1.2 ui-monospace,
+    "Malgun Gothic",
+    monospace;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px #09070c;
+}
+
+.pixel-dialogue .float {
+  animation: pixel-cursor 0.8s steps(2) infinite;
+}
+
+@keyframes pixel-cursor {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.horror-cinema button,
+.absolute.z-50 button,
+footer button,
+header + section > div button {
+  min-height: 30px;
+}
+
+input[type="range"] {
+  height: 12px;
+  border: 2px solid #09070d;
+  background: #332b3b;
+  accent-color: #d13a55;
+}
+
+@media (max-width: 639px) {
+  .pixel-dialogue {
+    padding: 13px 12px 13px 92px !important;
+  }
+  .dialogue-portrait {
+    left: 6px;
+    width: 82px;
+    height: 103px;
+  }
+  .pixel-speaker {
+    margin-top: -27px;
+  }
+}

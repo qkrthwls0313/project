@@ -600,9 +600,18 @@ export default function RainbowAtelier() {
           {dialog.length > 0 && (
             <button
               onClick={interact}
-              className="absolute inset-x-4 bottom-4 z-40 min-h-24 border-2 border-[#e9d9b8] bg-[#0e1020]/95 flex items-center gap-4 p-4 text-left text-sm leading-7 shadow-[6px_6px_0_#111] sm:text-base"
+              className="pixel-dialogue absolute inset-x-4 bottom-4 z-40 min-h-28 text-left text-sm leading-7 sm:text-base"
             >
               <Portrait
+                character={
+                  dialog[line].startsWith("서아:")
+                    ? "seoa"
+                    : dialog[line].startsWith("민혁:")
+                      ? "minhyuk"
+                      : dialog[line].startsWith("클렘:")
+                        ? "klem"
+                        : "yuna"
+                }
                 mood={
                   sanity < 30
                     ? "insane"
@@ -613,7 +622,14 @@ export default function RainbowAtelier() {
                         : "neutral"
                 }
               />
-              <span className="flex-1">{dialog[line]}</span>
+              <span className="pixel-dialogue-copy">
+                <b className="pixel-speaker">
+                  {dialog[line].includes(":")
+                    ? dialog[line].split(":")[0]
+                    : "유나"}
+                </b>
+                <span>{dialog[line]}</span>
+              </span>
               <span className="float absolute bottom-2 right-3 text-amber-300">
                 ▼
               </span>
@@ -720,6 +736,7 @@ function Hud({
 }
 function Portrait(props: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
+  character: "yuna" | "seoa" | "minhyuk" | "klem";
 }) {
   return <PixelPortrait {...props} />;
 }
@@ -732,47 +749,100 @@ function HorrorCutscene(props: {
 }
 function PixelPortrait({
   mood,
+  character,
 }: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
+  character: "yuna" | "seoa" | "minhyuk" | "klem";
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const x = ref.current?.getContext("2d");
     if (!x) return;
     x.imageSmoothingEnabled = false;
-    x.fillStyle = mood === "insane" ? "#260812" : "#9bb7c8";
-    x.fillRect(0, 0, 48, 48);
-    x.fillStyle = "#83aec8";
-    x.fillRect(9, 4, 30, 8);
-    x.fillRect(5, 9, 8, 20);
-    x.fillRect(35, 9, 8, 20);
+    x.clearRect(0, 0, 64, 80);
+    x.fillStyle = "#17131d";
+    x.fillRect(14, 7, 36, 4);
+    x.fillRect(8, 11, 48, 32);
+    x.fillRect(12, 43, 40, 7);
+    const hair =
+      character === "seoa"
+        ? "#b75972"
+        : character === "minhyuk"
+          ? "#6b4a38"
+          : character === "klem"
+            ? "#c6c0b4"
+            : mood === "insane"
+              ? "#346079"
+              : "#83aec8";
+    const hairShadow =
+      character === "seoa"
+        ? "#713449"
+        : character === "minhyuk"
+          ? "#3f2a25"
+          : character === "klem"
+            ? "#716b6b"
+            : "#346079";
+    x.fillStyle = hair;
+    x.fillRect(14, 5, 36, 8);
+    x.fillRect(9, 10, 13, 32);
+    x.fillRect(43, 10, 12, 32);
+    x.fillStyle = character === "klem" ? "#f1ead9" : "#b9d5df";
+    x.fillRect(18, 7, 20, 3);
     x.fillStyle = "#d6a08f";
-    x.fillRect(12, 12, 24, 25);
+    x.fillRect(17, 15, 30, 29);
+    x.fillRect(21, 44, 22, 5);
     x.fillStyle = "#2a1d2b";
-    const e = mood === "terrified" || mood === "insane" ? 4 : 2;
-    x.fillRect(17, 23, e, e);
-    x.fillRect(29, 23, e, e);
+    const e = mood === "terrified" || mood === "insane" ? 5 : 3;
+    x.fillRect(23, 27, e, e);
+    x.fillRect(38, 27, e, e);
+    x.fillStyle = "#fff1df";
+    x.fillRect(23, 27, 1, 1);
+    x.fillRect(38, 27, 1, 1);
     x.fillStyle = mood === "insane" ? "#d61035" : "#763645";
     x.fillRect(
-      mood === "neutral" ? 21 : 19,
-      31,
-      mood === "neutral" ? 7 : 11,
+      mood === "neutral" ? 29 : 26,
+      38,
+      mood === "neutral" ? 8 : 14,
       2,
     );
-    x.fillStyle = "#3c2d51";
-    x.fillRect(9, 37, 30, 11);
+    x.fillStyle = "#17131d";
+    x.fillRect(10, 51, 44, 29);
+    x.fillStyle =
+      character === "seoa"
+        ? "#713649"
+        : character === "minhyuk"
+          ? "#765036"
+          : character === "klem"
+            ? "#292433"
+            : "#3c2d51";
+    x.fillRect(13, 52, 38, 28);
+    x.fillStyle = "#756194";
+    x.fillRect(17, 54, 30, 4);
+    x.fillStyle = "#d1ad35";
+    x.fillRect(30, 50, 5, 30);
+    x.fillStyle = "#d6a08f";
+    x.fillRect(5, 58, 8, 22);
+    x.fillRect(51, 58, 8, 22);
+    x.fillStyle = hairShadow;
+    x.fillRect(9, 36, 7, 7);
+    x.fillRect(49, 35, 6, 8);
+    if (character === "klem") {
+      x.fillStyle = "#b71939";
+      x.fillRect(23, 27, 4, 3);
+      x.fillRect(38, 27, 4, 3);
+    }
     if (mood === "insane") {
       x.fillStyle = "#b0002a";
-      for (let i = 0; i < 48; i += 8) x.fillRect(i, (i * 3) % 43, 5, 2);
+      for (let i = 0; i < 64; i += 8) x.fillRect(i, (i * 3) % 75, 5, 2);
     }
-  }, [mood]);
+  }, [mood, character]);
   return (
     <canvas
       ref={ref}
-      width={48}
-      height={48}
-      aria-label={`유나 ${mood} 픽셀 초상`}
-      className={`pixel-art-canvas hidden h-20 w-20 shrink-0 border-2 sm:block ${mood === "insane" ? "border-red-500 glitch" : "border-[#d7c8a7]"}`}
+      width={64}
+      height={80}
+      aria-label={`${character} ${mood} 픽셀 초상`}
+      className={`dialogue-portrait pixel-art-canvas ${mood === "insane" ? "glitch" : ""}`}
     />
   );
 }
