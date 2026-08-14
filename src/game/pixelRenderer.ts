@@ -227,65 +227,72 @@ export function drawCharacter(
   frame: number,
   villain = false,
 ) {
-  const stride = frame % 3 === 1 ? -1 : frame % 3 === 2 ? 1 : 0;
+  const stride = frame % 3 === 1 ? -2 : frame % 3 === 2 ? 2 : 0;
   const bob = stride ? -1 : 0;
-  const x = Math.round(p.x - 17), y = Math.round(p.y - 45 + bob);
-  const edge = "#100d18", skin = villain ? "#bda99f" : "#e7b39f";
-  const hair = villain ? "#ddd7ca" : "#6fa6c7";
-  const hairDark = villain ? "#8e8790" : "#385f83";
-  const hairLight = villain ? "#fff5df" : "#b5d9e8";
-  const coat = villain ? "#28232f" : "#55436f";
-  box(ctx, "#00000077", x + 7, y + 44, 22, 4);
-  // Oversized stepped head: a 1px outline and three-value shading keep it crisp.
-  box(ctx, edge, x + 8, y + 2, 19, 2);
-  box(ctx, edge, x + 5, y + 4, 25, 4);
-  box(ctx, edge, x + 3, y + 8, 29, 14);
-  box(ctx, edge, x + 6, y + 22, 23, 5);
-  box(ctx, skin, x + 7, y + 8, 21, 14);
-  box(ctx, "#f3c7b2", x + 9, y + 9, 15, 3);
+  const x = Math.round(p.x - 24), y = Math.round(p.y - 62 + bob);
+  const edge = "#0c0a12", skin = villain ? "#bca79e" : "#e8b39f";
+  const hair = villain ? "#ddd8cf" : "#6fa8c9";
+  const hairDark = villain ? "#7e7882" : "#345b7f";
+  const hairLight = villain ? "#fff4df" : "#bce0ec";
+  const coat = villain ? "#29242f" : "#523d70";
+  box(ctx, "#00000088", x + 8, y + 59, 34, 5);
+  // 48x64 premium SD silhouette: head occupies over half the sprite.
+  box(ctx, edge, x + 12, y + 1, 24, 2);
+  box(ctx, edge, x + 7, y + 3, 34, 4);
+  box(ctx, edge, x + 4, y + 7, 40, 23);
+  box(ctx, edge, x + 7, y + 30, 34, 6);
+  box(ctx, skin, x + 9, y + 10, 30, 21);
+  box(ctx, "#f7cab7", x + 12, y + 11, 21, 4);
   if (dir === "up") {
-    box(ctx, hair, x + 6, y + 5, 23, 18);
-    box(ctx, hairDark, x + 6, y + 18, 23, 6);
-    box(ctx, hairLight, x + 10, y + 6, 11, 3);
-    box(ctx, hairDark, x + 5, y + 11, 3, 10);
+    box(ctx, hair, x + 8, y + 5, 32, 27);
+    box(ctx, hairDark, x + 8, y + 24, 32, 9);
+    box(ctx, hairLight, x + 13, y + 7, 16, 4);
+    box(ctx, hairDark, x + 6, y + 14, 5, 15);
+    box(ctx, hairDark, x + 37, y + 13, 5, 16);
   } else {
-    box(ctx, hair, x + 7, y + 4, 21, 5);
-    box(ctx, hair, x + 4, y + 8, 7, 15);
-    box(ctx, hair, x + 25, y + 8, 6, 15);
-    box(ctx, hairDark, x + 4, y + 18, 6, 6);
-    box(ctx, hairDark, x + 26, y + 17, 5, 7);
-    box(ctx, hairLight, x + 10, y + 5, 11, 2);
-    box(ctx, hair, x + 10, y + 8, 14, 4);
+    box(ctx, hair, x + 9, y + 4, 30, 7);
+    box(ctx, hair, x + 5, y + 9, 10, 22);
+    box(ctx, hair, x + 34, y + 9, 9, 22);
+    box(ctx, hairDark, x + 5, y + 23, 9, 9);
+    box(ctx, hairDark, x + 35, y + 22, 8, 10);
+    box(ctx, hairLight, x + 14, y + 6, 15, 3);
+    box(ctx, hair, x + 13, y + 9, 20, 6);
+    box(ctx, hairDark, x + 13, y + 13, 5, 5);
     const gaze = dir === "left" ? -1 : dir === "right" ? 1 : 0;
-    box(ctx, "#f8eee4", x + 10 + gaze, y + 14, 5, 4);
-    box(ctx, "#f8eee4", x + 21 + gaze, y + 14, 5, 4);
-    box(ctx, villain ? "#bd1839" : "#28324c", x + 12 + gaze, y + 15, 2, 3);
-    box(ctx, villain ? "#bd1839" : "#28324c", x + 23 + gaze, y + 15, 2, 3);
-    box(ctx, "#9c5365", x + 8, y + 20, 3, 1);
-    box(ctx, "#9c5365", x + 26, y + 20, 2, 1);
-    box(ctx, "#9b4d5c", x + 16, y + 22, 5, 1);
+    box(ctx, edge, x + 12 + gaze, y + 19, 8, 7);
+    box(ctx, edge, x + 29 + gaze, y + 19, 8, 7);
+    box(ctx, "#f9f2e8", x + 13 + gaze, y + 20, 6, 5);
+    box(ctx, "#f9f2e8", x + 30 + gaze, y + 20, 6, 5);
+    box(ctx, villain ? "#c51c3d" : "#43345d", x + 16 + gaze, y + 21, 3, 4);
+    box(ctx, villain ? "#c51c3d" : "#43345d", x + 33 + gaze, y + 21, 3, 4);
+    box(ctx, "#ffffff", x + 17 + gaze, y + 21, 1, 1);
+    box(ctx, "#ffffff", x + 34 + gaze, y + 21, 1, 1);
+    box(ctx, "#b45c70", x + 10, y + 28, 4, 2);
+    box(ctx, "#b45c70", x + 36, y + 28, 3, 2);
+    box(ctx, "#9b4d5c", x + 22, y + 30, 6, 2);
     if (!villain) {
-      box(ctx, "#e4bd47", x + 27, y + 8, 4, 2);
-      box(ctx, "#f7dc70", x + 29, y + 6, 2, 5);
+      box(ctx, "#e4bd47", x + 38, y + 10, 6, 3);
+      box(ctx, "#f7dc70", x + 41, y + 7, 3, 8);
     }
   }
-  box(ctx, edge, x + 5, y + 28, 5, 11);
-  box(ctx, edge, x + 27, y + 28, 5, 11);
-  box(ctx, coat, x + 6, y + 29 + (dir === "left" ? stride : 0), 4, 8);
-  box(ctx, coat, x + 27, y + 29 + (dir === "right" ? stride : 0), 4, 8);
-  box(ctx, skin, x + 6, y + 37, 4, 3);
-  box(ctx, skin, x + 27, y + 37, 4, 3);
-  outline(ctx, x + 10, y + 26, 17, 15, edge, coat, villain ? "#55485d" : "#806aa0");
-  box(ctx, "#ddd5e5", x + 13, y + 27, 11, 4);
-  box(ctx, villain ? "#b51938" : "#e4bd47", x + 17, y + 27, 3, 11);
-  box(ctx, edge, x + 10 + stride, y + 39, 7, 6);
-  box(ctx, edge, x + 20 - stride, y + 39, 7, 6);
-  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 11 + stride, y + 43, 7, 2);
-  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 19 - stride, y + 43, 7, 2);
+  box(ctx, edge, x + 5, y + 39, 7, 14);
+  box(ctx, edge, x + 36, y + 39, 7, 14);
+  box(ctx, coat, x + 7, y + 40 + (dir === "left" ? stride : 0), 5, 11);
+  box(ctx, coat, x + 36, y + 40 + (dir === "right" ? stride : 0), 5, 11);
+  box(ctx, skin, x + 7, y + 50, 5, 4);
+  box(ctx, skin, x + 36, y + 50, 5, 4);
+  outline(ctx, x + 12, y + 35, 24, 20, edge, coat, villain ? "#55485d" : "#806aa0");
+  box(ctx, "#e9e2ee", x + 16, y + 36, 16, 5);
+  box(ctx, villain ? "#b51938" : "#e4bd47", x + 23, y + 37, 3, 14);
+  box(ctx, "#2e2440", x + 15, y + 51, 18, 6);
+  box(ctx, edge, x + 12 + stride, y + 54, 10, 8);
+  box(ctx, edge, x + 27 - stride, y + 54, 10, 8);
+  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 13 + stride, y + 59, 10, 3);
+  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 26 - stride, y + 59, 10, 3);
   if (villain) {
-    box(ctx, "#781129", x + 8, y + 19, 3, 4);
-    box(ctx, "#b9a378", x + 31, y + 27, 2, 20);
-    box(ctx, "#d7d2c5", x + 29, y + 40, 5, 7);
+    box(ctx, "#781129", x + 10, y + 27, 4, 6);
+    box(ctx, "#b9a378", x + 43, y + 39, 3, 25);
+    box(ctx, "#d7d2c5", x + 40, y + 55, 7, 9);
   }
 }
 
@@ -369,10 +376,11 @@ export function renderGame(
     drawEasel(ctx, 350, 70, true);
   }
   const movingFrame = Math.floor(time / 150) % 3;
-  drawCharacter(ctx, player, player.dir, movingFrame);
   if (horror)
     drawCharacter(ctx, enemy, "down", Math.floor(time / 120) % 3, true);
   pixelLighting(ctx, player, player.dir, light && battery > 0, battery, time);
+  // The player is composited after darkness so the flashlight mask never hides Yuna.
+  drawCharacter(ctx, player, player.dir, movingFrame);
   box(ctx, "#080912dd", 48, 48, 72, 24);
   ctx.fillStyle = "#f1dfbd";
   ctx.font = "bold 14px monospace";
@@ -539,12 +547,8 @@ export function renderTitle(ctx: CanvasRenderingContext2D, time: number) {
     const rx = (i * 47 + frame * 4) % 768, ry = (i * 71 + frame * 9) % 432;
     box(ctx, i % 3 ? "#4f718b" : "#9bb5c5", rx, ry, 2, 8);
   }
-  // Hero and two faceless classmates use the same enlarged SD sprite language.
-  ctx.save();
-  ctx.translate(245, 239);
-  ctx.scale(2, 2);
-  drawCharacter(ctx, { x: 0, y: 68 }, "down", frame % 3);
-  ctx.restore();
+  // A faceless director remains embedded in the building; the hero portrait is
+  // composited separately at title resolution rather than reusing a map sprite.
   ctx.save();
   ctx.globalAlpha = 0.72;
   ctx.translate(520, 264);

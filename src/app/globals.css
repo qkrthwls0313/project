@@ -1053,11 +1053,42 @@ input[type="range"] {
   image-rendering: crisp-edges;
 }
 
+.title-yuna-portrait {
+  position: absolute;
+  z-index: 4;
+  left: 2.5%;
+  bottom: 0;
+  width: 48%;
+  height: 91%;
+  background-image: url("/assets/portraits/yuna-emotions.png");
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
+  background-position: 50% 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(8px 0 0 #08050d) drop-shadow(-5px 0 0 #08050d) saturate(.9);
+}
+
+.title-yuna-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 7px, #79162a1d 7px 9px);
+  mix-blend-mode: screen;
+  animation: title-corruption 2.8s steps(2) infinite;
+}
+
 .pixel-title-content {
   width: 58%;
   margin-left: auto;
   padding: 28px 5% 24px 0;
   filter: drop-shadow(0 8px 0 #050408);
+}
+
+@keyframes title-corruption {
+  0%, 86%, 100% { opacity: 0; transform: translateX(0); }
+  88% { opacity: 1; transform: translateX(-5px); }
+  92% { opacity: .45; transform: translateX(7px); }
 }
 
 .pixel-title-content::before {
@@ -1230,13 +1261,39 @@ input[type="range"] {
 }
 
 .pixel-hud-icon {
-  display: grid;
+  position: relative;
+  display: block;
   width: 27px;
-  place-items: center;
-  color: #f1c95c;
-  font-size: 15px;
-  text-shadow: 2px 2px 0 #63334a;
+  flex: 0 0 27px;
+  image-rendering: pixelated;
 }
+
+.pixel-hud-icon i,
+.pixel-hud-icon::before,
+.pixel-hud-icon::after { content: ""; position: absolute; display: block; }
+
+/* 16px-style illustrated icons, assembled from hard square clusters. */
+.icon-heart::before {
+  left: 5px; top: 7px; width: 16px; height: 14px;
+  background: #c82747;
+  clip-path: polygon(0 14%, 14% 0, 43% 0, 50% 14%, 57% 0, 86% 0, 100% 14%, 100% 50%, 50% 100%, 0 50%);
+  box-shadow: 2px 2px 0 #5b1328;
+}
+.icon-heart::after { left: 8px; top: 9px; width: 5px; height: 3px; background: #ff8794; }
+.icon-heart i { left: 3px; top: 5px; width: 20px; height: 18px; border: 2px solid #09070d; clip-path: polygon(0 12%, 12% 0, 42% 0, 50% 12%, 58% 0, 88% 0, 100% 12%, 100% 52%, 50% 100%, 0 52%); }
+
+.icon-eye::before {
+  left: 3px; top: 8px; width: 21px; height: 13px;
+  background: #d9c8ec;
+  border: 2px solid #09070d;
+  clip-path: polygon(0 50%, 20% 12%, 50% 0, 80% 12%, 100% 50%, 80% 88%, 50% 100%, 20% 88%);
+}
+.icon-eye::after { left: 11px; top: 12px; width: 7px; height: 7px; background: #8756a8; border: 2px solid #24132f; }
+.icon-eye i { left: 13px; top: 14px; width: 2px; height: 2px; z-index: 2; background: #f8e9ff; }
+
+.icon-battery::before { left: 4px; top: 8px; width: 19px; height: 14px; background: #22202a; border: 2px solid #09070d; }
+.icon-battery::after { left: 23px; top: 12px; width: 3px; height: 6px; background: #c5b898; border: 1px solid #09070d; }
+.icon-battery i { left: 7px; top: 11px; width: 13px; height: 8px; z-index: 2; background: repeating-linear-gradient(90deg, #eac74f 0 3px, #9c7131 3px 4px); }
 
 .pixel-hud-data { flex: 1; min-width: 0; }
 .pixel-hud-label {
@@ -1308,5 +1365,6 @@ section > div[class*="inset-10"] {
     width: 72%;
     padding-right: 2%;
   }
+  .title-yuna-portrait { left: -7%; width: 58%; height: 82%; opacity: .75; }
   .pixel-status-row { transform: scale(.72); transform-origin: left top; }
 }

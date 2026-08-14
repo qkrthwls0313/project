@@ -343,7 +343,7 @@ export default function RainbowAtelier() {
         beep("shock");
         speak([
           "라이터 불꽃이 증류소로 번진다.",
-          "클렘: 내 색을 망치지 마!",
+          "한도윤 원장: 내 색을 망치지 마!",
           "불길을 피해 1층 출구로 달려가야 한다!",
         ]);
         setTimeout(() => setFlash(false), 700);
@@ -609,7 +609,7 @@ export default function RainbowAtelier() {
                     ? "seoa"
                     : dialog[line].startsWith("민혁:")
                       ? "minhyuk"
-                      : dialog[line].startsWith("클렘:")
+                    : dialog[line].startsWith("한도윤 원장:")
                         ? "klem"
                         : "yuna"
                 }
@@ -721,10 +721,11 @@ function Hud({
   value: number;
   danger?: boolean;
 }) {
-  const icon = label === "STAMINA" ? "◆" : label === "SANITY" ? "✦" : "▰";
+  const iconClass =
+    label === "STAMINA" ? "icon-heart" : label === "SANITY" ? "icon-eye" : "icon-battery";
   return (
     <div className={`pixel-hud ${danger && value < 40 ? "is-danger" : ""}`}>
-      <span className="pixel-hud-icon" aria-hidden="true">{icon}</span>
+      <span className={`pixel-hud-icon ${iconClass}`} aria-hidden="true"><i /></span>
       <div className="pixel-hud-data">
         <div className="pixel-hud-label">
           <span>{label}</span><b>{Math.round(value)}</b>
@@ -1147,7 +1148,7 @@ function PixelHorrorCutscene({
     <div
       role="dialog"
       aria-label={
-        kind === "seoa" ? "서아의 픽셀 공포 컷씬" : "클렘의 픽셀 공포 컷씬"
+        kind === "seoa" ? "서아의 픽셀 공포 컷씬" : "한도윤 원장의 픽셀 공포 컷씬"
       }
       className="horror-cinema"
     >
@@ -1155,7 +1156,7 @@ function PixelHorrorCutscene({
       <p className="horror-caption">
         {kind === "seoa"
           ? "그림이… 숨을 쉬고 있다."
-          : "클렘: 완벽한 색은 살아 움직여야 하지."}
+          : "한도윤 원장: 완벽한 색은 살아 움직여야 하지."}
       </p>
       <div className="cinema-label">
         {stage === "flash"
@@ -1461,6 +1462,7 @@ function TitleScreen({
   return (
     <main className="pixel-title-screen relative flex min-h-screen items-center justify-center overflow-hidden p-6">
       <TitlePixelArt />
+      <div className="title-yuna-portrait" role="img" aria-label="겁에 질린 유나의 픽셀 반신 일러스트" />
       <div className="pixel-title-content relative z-10 w-full max-w-3xl text-center">
         <p className="mb-3 text-[10px] tracking-[.55em] text-rose-300">
           2D PIXEL PSYCHOLOGICAL HORROR
@@ -1688,7 +1690,7 @@ function HideQTE({ done }: { done: (success: boolean) => void }) {
           B2F 캐비닛 · 숨을 참아
         </p>
         <h2 className="mt-3 text-2xl font-black">
-          클렘에게 심장 소리를 들키지 마세요
+          한도윤 원장에게 심장 소리를 들키지 마세요
         </h2>
         <p className="mt-2 text-sm text-slate-400">
           Space 또는 버튼으로 바늘을 안전 영역에 유지 · {time}초
