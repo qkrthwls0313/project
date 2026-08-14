@@ -418,6 +418,39 @@ function pixelLighting(
   ctx.restore();
 }
 
+function drawGuidePaper(
+  ctx: CanvasRenderingContext2D,
+  player: Point,
+  time: number,
+  promptOnly = false,
+) {
+  const x = 124, y = 337;
+  const nearby = Math.hypot(player.x - (x + 15), player.y - (y + 10)) < 72;
+  if (!promptOnly) {
+    box(ctx, "#08060d99", x + 4, y + 5, 31, 20);
+    box(ctx, "#2b2330", x - 2, y + 2, 34, 22);
+    box(ctx, "#d8ccb1", x, y, 30, 19);
+    box(ctx, "#f4e8c9", x + 2, y + 2, 25, 3);
+    box(ctx, "#6f2738", x + 5, y + 7, 20, 2);
+    box(ctx, "#594b4e", x + 5, y + 11, 17, 1);
+    box(ctx, "#594b4e", x + 5, y + 14, 20, 1);
+    box(ctx, "#a31d38", x + 22, y + 15, 5, 3);
+    box(ctx, "#b7a889", x + 27, y, 3, 4);
+    if (Math.floor(time / 280) % 2 === 0) {
+      box(ctx, "#f7df77", x - 4, y + 6, 2, 2);
+      box(ctx, "#f7df77", x + 34, y + 1, 2, 2);
+      box(ctx, "#f7df77", x + 30, y + 23, 2, 2);
+    }
+  }
+  if (promptOnly && nearby) {
+    outline(ctx, x + 3, y - 22, 29, 18, "#09070d", "#34243c", "#d7bd70");
+    ctx.fillStyle = "#ffe782";
+    ctx.font = "bold 10px monospace";
+    ctx.fillText("Z 조사", x + 5, y - 10);
+    box(ctx, "#d7bd70", x + 15, y - 4, 4, 4);
+  }
+}
+
 export function renderGame(
   ctx: CanvasRenderingContext2D,
   floor: PixelFloor,
@@ -427,6 +460,7 @@ export function renderGame(
   battery: number,
   time: number,
   horror: boolean,
+  guideRead: boolean,
 ) {
   ctx.imageSmoothingEnabled = false;
   box(ctx, "#090a12", 0, 0, 768, 432);
@@ -446,6 +480,7 @@ export function renderGame(
   if (floor === "1F") {
     drawEasel(ctx, 590, 72);
     drawTable(ctx, 90, 288, 94);
+    if (!guideRead) drawGuidePaper(ctx, player, time);
   }
   if (floor === "2F") {
     drawShelf(ctx, 584, 72);
@@ -467,6 +502,7 @@ export function renderGame(
   if (horror)
     drawCharacter(ctx, enemy, "down", Math.floor(time / 120) % 3, true);
   pixelLighting(ctx, player, player.dir, light && battery > 0, battery, time);
+  if (floor === "1F" && !guideRead) drawGuidePaper(ctx, player, time, true);
   // The player is composited after darkness so the flashlight mask never hides Yuna.
   drawCharacter(ctx, player, player.dir, movingFrame);
   box(ctx, "#080912dd", 48, 48, 72, 24);

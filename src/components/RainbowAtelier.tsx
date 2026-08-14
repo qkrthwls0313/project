@@ -43,8 +43,11 @@ const dialogues: Record<string, string[]> = {
     "[조작] 방향키/WASD 이동 · Z/Space 조사 · Shift 달리기",
   ],
   note: [
-    "『아이들이 두려움은 정맥의 푸른빛을 더욱 깊게 만든다.』",
-    "유나: 이건… 원장님의 글씨야.",
+    "바닥에 떨어진 당직 기록이다. 마지막 문장만 붉은 물감으로 번져 있다.",
+    "『지하 스터디룸 점검. 출입 열쇠는 1층 원장실 액자 뒤에 보관한다.』",
+    "유나: 원장실부터 확인하면 지하로 내려갈 수 있겠어.",
+    "[메인 목표] 1층 원장실을 수색하고 지하 출입 열쇠를 확보하세요.",
+    "[가이드] 빛나는 물건 가까이에서 Z 또는 Space를 누르면 조사할 수 있습니다.",
   ],
   locked: [
     "지하 문이다. 세 개의 안료 홈이 비어 있다.",
@@ -253,12 +256,9 @@ export default function RainbowAtelier() {
       f = flagsRef.current,
       fl = floorRef.current;
     if (fl === "1F") {
-      if (x < 180 && y < 165 && !f.includes("note")) {
+      if (x > 65 && x < 195 && y > 275 && !f.includes("note")) {
         addFlag("note");
-        speak([
-          "[일기 1/4] 실종 학생들은 모두 ‘색채 적성’ 검사를 받았다.",
-          ...dialogues.note,
-        ]);
+        speak(dialogues.note);
         beep("pickup");
       } else if (x > 585 && y < 165 && !f.includes("key")) {
         addFlag("key");
@@ -474,6 +474,7 @@ export default function RainbowAtelier() {
       batteryRef.current,
       performance.now(),
       horror,
+      flagsRef.current.includes("note"),
     );
   }, [light]);
 
@@ -496,9 +497,7 @@ export default function RainbowAtelier() {
         onComplete={() => {
           setScene("game");
           speak([
-            "[메인 목표] 열려 있는 쪽문으로 진입하세요.",
-            "1층 원장실을 수색하고 지하로 내려가는 열쇠를 확보하세요.",
-            "[조작] 방향키/WASD 이동 · Z/Space 조사 · F 손전등",
+            "[조작] 방향키/WASD 이동 · Shift 달리기 · Z/Space 조사 · F 손전등 · ESC 메뉴",
           ]);
         }}
       />
@@ -1750,27 +1749,34 @@ function Pause({
   quit: () => void;
 }) {
   return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/75">
-      <div className="w-64 border-2 border-white/40 bg-[#111426] p-6 text-center">
-        <h2 className="mb-5 text-xl font-black tracking-widest">PAUSED</h2>
+    <div className="pixel-pause-backdrop absolute inset-0 z-50 flex items-center justify-center">
+      <div className="pixel-pause-panel w-72 p-6 text-center">
+        <div className="pixel-pause-tape" aria-hidden="true" />
+        <p className="pixel-pause-kicker">RAINBOW ATELIER</p>
+        <h2 className="pixel-pause-title">일시 정지</h2>
+        <div className="pixel-pause-divider" aria-hidden="true"><i /><i /><i /></div>
         <button
           onClick={close}
-          className="mb-2 block w-full border border-white/20 p-2"
+          className="pixel-pause-button pixel-pause-continue mb-3 block w-full"
         >
-          계속하기
+          <span className="pause-icon pause-icon-play" aria-hidden="true" />
+          <span><b>계속하기</b><small>게임으로 돌아갑니다</small></span>
         </button>
         <button
           onClick={save}
-          className="mb-2 block w-full border border-amber-400/50 p-2 text-amber-300"
+          className="pixel-pause-button pixel-pause-save mb-3 block w-full"
         >
-          게임 저장
+          <span className="pause-icon pause-icon-save" aria-hidden="true" />
+          <span><b>게임 저장</b><small>현재 진행 상황 기록</small></span>
         </button>
         <button
           onClick={quit}
-          className="block w-full border border-rose-400/50 p-2 text-rose-300"
+          className="pixel-pause-button pixel-pause-titleback block w-full"
         >
-          타이틀로
+          <span className="pause-icon pause-icon-door" aria-hidden="true" />
+          <span><b>타이틀로</b><small>저장하지 않은 진행은 사라집니다</small></span>
         </button>
+        <p className="pixel-pause-hint">ESC · 메뉴 닫기</p>
       </div>
     </div>
   );

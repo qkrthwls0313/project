@@ -1384,6 +1384,116 @@ input[type="range"] {
 .pixel-light-button.is-on { color: #ffe470 !important; outline-color: #d49e44; }
 @keyframes pixel-danger { 50% { filter: brightness(1.7); } }
 
+.pixel-pause-backdrop {
+  border: 0 !important;
+  outline: 0 !important;
+  background-color: #05040bd9 !important;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 7px, #7c244112 7px 8px),
+    radial-gradient(circle at 50% 45%, #3a183566 0, transparent 48%) !important;
+  box-shadow: inset 0 0 0 4px #09060e, inset 0 0 0 8px #29182d !important;
+  backdrop-filter: blur(1px);
+}
+
+.pixel-pause-panel {
+  position: relative;
+  border: 4px solid #09060e;
+  outline: 3px solid #b99b66;
+  outline-offset: -8px;
+  background: #17101f;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, 100% 4px, 100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) 100%, 8px 100%, 8px calc(100% - 4px), 0 calc(100% - 4px), 0 8px, 8px 8px);
+  box-shadow: inset 0 0 0 7px #30213a, 10px 10px 0 #030207;
+  font-family: ui-monospace, "Malgun Gothic", monospace;
+}
+
+.pixel-pause-panel::before,
+.pixel-pause-panel::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  background: #d7bd76;
+  box-shadow: 0 8px 0 #5e3d59;
+}
+.pixel-pause-panel::before { left: 13px; }
+.pixel-pause-panel::after { right: 13px; }
+.pixel-pause-tape {
+  position: absolute;
+  left: 50%; top: -8px;
+  width: 56px; height: 12px;
+  transform: translateX(-50%);
+  background: #8f2743;
+  border: 3px solid #09060e;
+  box-shadow: inset 0 3px 0 #d05b70;
+}
+.pixel-pause-kicker { color: #967f9f; font-size: 7px; letter-spacing: .32em; }
+.pixel-pause-title {
+  margin-top: 5px;
+  color: #fff0c9;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-shadow: 3px 0 #79213f, -3px 0 #26345b, 0 3px #08060c;
+}
+.pixel-pause-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 18px;
+}
+.pixel-pause-divider::before,
+.pixel-pause-divider::after { content: ""; width: 54px; height: 2px; background: #4f3857; }
+.pixel-pause-divider i { width: 4px; height: 4px; background: #d0af61; transform: rotate(45deg); }
+
+.pixel-pause-button {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  min-height: 52px !important;
+  padding: 7px 9px !important;
+  border: 3px solid #08060c !important;
+  outline: 2px solid #5f4b69;
+  outline-offset: -5px;
+  background: #261b30 !important;
+  color: #eee4cf !important;
+  text-align: left;
+  box-shadow: inset 0 -5px 0 #100b16, 4px 4px 0 #07050b !important;
+}
+.pixel-pause-button:hover { transform: translate(-2px, -2px); filter: brightness(1.22); }
+.pixel-pause-button:active { transform: translate(2px, 2px); box-shadow: inset 0 -2px 0 #100b16 !important; }
+.pixel-pause-button > span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.pixel-pause-button b { font-size: 12px; letter-spacing: .08em; }
+.pixel-pause-button small { color: #81788b; font-size: 7px; letter-spacing: .03em; }
+.pixel-pause-continue { outline-color: #597d72; }
+.pixel-pause-save { outline-color: #9b7945; }
+.pixel-pause-titleback { outline-color: #874054; }
+
+.pause-icon {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  margin-right: 9px;
+  border: 2px solid #08060c;
+  background: #120d19;
+  box-shadow: inset 0 0 0 2px #3c2d46;
+}
+.pause-icon::before,
+.pause-icon::after { content: ""; position: absolute; display: block; }
+.pause-icon-play::before {
+  left: 10px; top: 7px; width: 12px; height: 16px;
+  background: #6fc59c;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  filter: drop-shadow(2px 2px 0 #214c42);
+}
+.pause-icon-save::before { left: 6px; top: 5px; width: 18px; height: 20px; background: #d1a34e; border: 2px solid #5c351e; }
+.pause-icon-save::after { left: 10px; top: 8px; width: 10px; height: 6px; background: #30243b; box-shadow: 0 10px 0 #f0d787; }
+.pause-icon-door::before { left: 7px; top: 5px; width: 17px; height: 22px; background: #86344e; border: 2px solid #3c1324; }
+.pause-icon-door::after { left: 18px; top: 15px; width: 3px; height: 3px; background: #f2d36f; }
+.pixel-pause-hint { margin-top: 16px; color: #6e6376; font-size: 8px; letter-spacing: .15em; }
+
 section > .absolute.z-50,
 section > div[class*="inset-4"],
 section > div[class*="inset-10"] {
