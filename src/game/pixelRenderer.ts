@@ -227,77 +227,98 @@ export function drawCharacter(
   frame: number,
   villain = false,
 ) {
-  const x = Math.round(p.x - 16),
-    y = Math.round(p.y - 42),
-    step = frame % 3 === 1 ? -1 : frame % 3 === 2 ? 1 : 0;
-  const edge = "#17131c",
-    skin = villain ? "#c8b8a7" : "#dca997",
-    hair = villain ? "#d5d0c5" : "#79a9c4",
-    coat = villain ? "#292433" : "#55446f";
-  box(ctx, "#00000055", x + 7, y + 41, 19, 4);
-  box(ctx, edge, x + 9, y + 3, 15, 2);
-  box(ctx, edge, x + 6, y + 5, 21, 12);
-  box(ctx, edge, x + 8, y + 17, 17, 6);
-  box(ctx, skin, x + 8, y + 8, 17, 10);
-  box(ctx, skin, x + 10, y + 18, 13, 3);
-  box(ctx, "#efc1aa", x + 10, y + 9, 12, 2);
+  const stride = frame % 3 === 1 ? -1 : frame % 3 === 2 ? 1 : 0;
+  const bob = stride ? -1 : 0;
+  const x = Math.round(p.x - 17), y = Math.round(p.y - 45 + bob);
+  const edge = "#100d18", skin = villain ? "#bda99f" : "#e7b39f";
+  const hair = villain ? "#ddd7ca" : "#6fa6c7";
+  const hairDark = villain ? "#8e8790" : "#385f83";
+  const hairLight = villain ? "#fff5df" : "#b5d9e8";
+  const coat = villain ? "#28232f" : "#55436f";
+  box(ctx, "#00000077", x + 7, y + 44, 22, 4);
+  // Oversized stepped head: a 1px outline and three-value shading keep it crisp.
+  box(ctx, edge, x + 8, y + 2, 19, 2);
+  box(ctx, edge, x + 5, y + 4, 25, 4);
+  box(ctx, edge, x + 3, y + 8, 29, 14);
+  box(ctx, edge, x + 6, y + 22, 23, 5);
+  box(ctx, skin, x + 7, y + 8, 21, 14);
+  box(ctx, "#f3c7b2", x + 9, y + 9, 15, 3);
   if (dir === "up") {
-    box(ctx, hair, x + 8, y + 5, 17, 13);
-    box(ctx, "#4c7895", x + 9, y + 16, 15, 5);
-    box(ctx, "#b8d1dc", x + 11, y + 6, 8, 2);
+    box(ctx, hair, x + 6, y + 5, 23, 18);
+    box(ctx, hairDark, x + 6, y + 18, 23, 6);
+    box(ctx, hairLight, x + 10, y + 6, 11, 3);
+    box(ctx, hairDark, x + 5, y + 11, 3, 10);
   } else {
-    box(ctx, hair, x + 9, y + 4, 15, 4);
-    box(ctx, hair, x + 7, y + 8, 5, 13);
-    box(ctx, hair, x + 22, y + 8, 4, 13);
-    box(ctx, "#4c7895", x + 7, y + 15, 4, 5);
-    box(ctx, "#4c7895", x + 22, y + 15, 4, 5);
-    box(ctx, "#b8d1dc", x + 11, y + 5, 8, 2);
-    box(ctx, "#3f3349", x + 12, y + 13, 2, 2);
-    box(ctx, "#3f3349", x + 19, y + 13, 2, 2);
-    box(ctx, "#a85b65", x + 15, y + 18, 4, 1);
+    box(ctx, hair, x + 7, y + 4, 21, 5);
+    box(ctx, hair, x + 4, y + 8, 7, 15);
+    box(ctx, hair, x + 25, y + 8, 6, 15);
+    box(ctx, hairDark, x + 4, y + 18, 6, 6);
+    box(ctx, hairDark, x + 26, y + 17, 5, 7);
+    box(ctx, hairLight, x + 10, y + 5, 11, 2);
+    box(ctx, hair, x + 10, y + 8, 14, 4);
+    const gaze = dir === "left" ? -1 : dir === "right" ? 1 : 0;
+    box(ctx, "#f8eee4", x + 10 + gaze, y + 14, 5, 4);
+    box(ctx, "#f8eee4", x + 21 + gaze, y + 14, 5, 4);
+    box(ctx, villain ? "#bd1839" : "#28324c", x + 12 + gaze, y + 15, 2, 3);
+    box(ctx, villain ? "#bd1839" : "#28324c", x + 23 + gaze, y + 15, 2, 3);
+    box(ctx, "#9c5365", x + 8, y + 20, 3, 1);
+    box(ctx, "#9c5365", x + 26, y + 20, 2, 1);
+    box(ctx, "#9b4d5c", x + 16, y + 22, 5, 1);
+    if (!villain) {
+      box(ctx, "#e4bd47", x + 27, y + 8, 4, 2);
+      box(ctx, "#f7dc70", x + 29, y + 6, 2, 5);
+    }
   }
-  box(ctx, edge, x + 6, y + 23, 4, 12);
-  box(ctx, edge, x + 24, y + 23, 4, 12);
-  box(ctx, skin, x + 7, y + 32, 3, 4);
-  box(ctx, skin, x + 24, y + 32, 3, 4);
-  outline(
-    ctx,
-    x + 9,
-    y + 22,
-    16,
-    16,
-    edge,
-    coat,
-    villain ? "#55485d" : "#796397",
-  );
-  box(ctx, villain ? "#b51938" : "#d4b339", x + 15, y + 22, 3, 10);
-  box(ctx, edge, x + 9 + step, y + 37, 6, 6);
-  box(ctx, edge, x + 19 - step, y + 37, 6, 6);
-  box(ctx, "#ddd0be", x + 10 + step, y + 41, 6, 2);
-  box(ctx, "#ddd0be", x + 18 - step, y + 41, 6, 2);
+  box(ctx, edge, x + 5, y + 28, 5, 11);
+  box(ctx, edge, x + 27, y + 28, 5, 11);
+  box(ctx, coat, x + 6, y + 29 + (dir === "left" ? stride : 0), 4, 8);
+  box(ctx, coat, x + 27, y + 29 + (dir === "right" ? stride : 0), 4, 8);
+  box(ctx, skin, x + 6, y + 37, 4, 3);
+  box(ctx, skin, x + 27, y + 37, 4, 3);
+  outline(ctx, x + 10, y + 26, 17, 15, edge, coat, villain ? "#55485d" : "#806aa0");
+  box(ctx, "#ddd5e5", x + 13, y + 27, 11, 4);
+  box(ctx, villain ? "#b51938" : "#e4bd47", x + 17, y + 27, 3, 11);
+  box(ctx, edge, x + 10 + stride, y + 39, 7, 6);
+  box(ctx, edge, x + 20 - stride, y + 39, 7, 6);
+  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 11 + stride, y + 43, 7, 2);
+  box(ctx, villain ? "#5e5665" : "#d8cabb", x + 19 - stride, y + 43, 7, 2);
   if (villain) {
-    box(ctx, "#c61b3b", x + 12, y + 13, 2, 2);
-    box(ctx, "#c61b3b", x + 19, y + 13, 2, 2);
-    box(ctx, "#b9a378", x + 26, y + 22, 3, 24);
-    box(ctx, "#d7d2c5", x + 25, y + 39, 5, 7);
+    box(ctx, "#781129", x + 8, y + 19, 3, 4);
+    box(ctx, "#b9a378", x + 31, y + 27, 2, 20);
+    box(ctx, "#d7d2c5", x + 29, y + 40, 5, 7);
   }
 }
 
 function pixelLighting(
   ctx: CanvasRenderingContext2D,
   player: Point,
+  dir: PixelDirection,
   enabled: boolean,
   battery: number,
+  time: number,
 ) {
+  const vectors: Record<PixelDirection, Point> = {
+    up: { x: 0, y: -1 }, down: { x: 0, y: 1 },
+    left: { x: -1, y: 0 }, right: { x: 1, y: 0 },
+  };
+  const facing = vectors[dir];
+  const flicker = battery < 20 && Math.floor(time / 90) % 7 === 0 ? 36 : 0;
+  const range = (battery < 20 ? 124 : 190) - flicker;
   ctx.save();
   for (let y = 0; y < 432; y += TILE)
     for (let x = 0; x < 768; x += TILE) {
-      const d = Math.hypot(x + 8 - player.x, y + 8 - player.y);
-      const radius = battery < 20 ? 112 : 160;
-      if (!enabled || d > radius)
-        box(ctx, d > radius + 80 ? "#020208ee" : "#03040ab8", x, y, TILE, TILE);
-      else if (d > radius * 0.72 && (x / TILE + y / TILE) % 2 === 0)
-        box(ctx, "#05050a55", x, y, TILE, TILE);
+      const dx = x + 8 - player.x, dy = y + 8 - player.y;
+      const d = Math.max(1, Math.hypot(dx, dy));
+      const alignment = (dx * facing.x + dy * facing.y) / d;
+      const nearGlow = d < 26;
+      const inCone = enabled && d < range && alignment > 0.68;
+      const inCore = inCone && alignment > 0.9 && d < range * 0.78;
+      if (!nearGlow && !inCone)
+        box(ctx, d > range + 70 ? "#020208f2" : "#03040acb", x, y, TILE, TILE);
+      else if (!inCore && (x / TILE + y / TILE) % 2 === 0)
+        box(ctx, "#08081762", x, y, TILE, TILE);
+      else if (inCone && d > range * 0.78)
+        box(ctx, "#0808173d", x, y, TILE, TILE);
     }
   ctx.restore();
 }
@@ -351,7 +372,7 @@ export function renderGame(
   drawCharacter(ctx, player, player.dir, movingFrame);
   if (horror)
     drawCharacter(ctx, enemy, "down", Math.floor(time / 120) % 3, true);
-  pixelLighting(ctx, player, light && battery > 0, battery);
+  pixelLighting(ctx, player, player.dir, light && battery > 0, battery, time);
   box(ctx, "#080912dd", 48, 48, 72, 24);
   ctx.fillStyle = "#f1dfbd";
   ctx.font = "bold 14px monospace";
@@ -475,4 +496,60 @@ export function renderOpening(
   if (kind === "room" || kind === "tv") drawRoom(ctx, frame, kind === "tv");
   else if (kind === "phone") drawPhone(ctx, frame);
   else drawSchool(ctx, frame);
+}
+
+export function renderTitle(ctx: CanvasRenderingContext2D, time: number) {
+  ctx.imageSmoothingEnabled = false;
+  const frame = Math.floor(time / 170);
+  box(ctx, "#070610", 0, 0, 768, 432);
+  // Crooked academy façade and bruised night sky.
+  for (let y = 0; y < 176; y += 8)
+    for (let x = 0; x < 768; x += 8)
+      if ((x / 8 + y / 8) % 5 === 0) box(ctx, "#11152a", x, y, 8, 8);
+  box(ctx, "#10131d", 102, 78, 564, 310);
+  box(ctx, "#211827", 112, 88, 544, 300);
+  for (let y = 96; y < 370; y += 16)
+    for (let x = 120 + ((y / 16) % 2) * 8; x < 648; x += 32)
+      box(ctx, (x + y) % 64 ? "#342430" : "#482936", x, y, 22, 10);
+  box(ctx, "#09080e", 264, 48, 240, 48);
+  box(ctx, "#e3d5b1", 280, 59, 208, 5);
+  box(ctx, "#8c1733", 292, 72, 184, 7);
+  // Windows intermittently resemble blinking eyes.
+  for (let row = 0; row < 2; row++) for (let col = 0; col < 5; col++) {
+    const wx = 142 + col * 100, wy = 128 + row * 92;
+    outline(ctx, wx, wy, 50, 54, "#09070d", "#161523", "#3b3043");
+    box(ctx, "#09070d", wx + 24, wy + 2, 3, 50);
+    if ((col + row + Math.floor(frame / 9)) % 4 === 0) {
+      box(ctx, "#bc2142", wx + 9, wy + 24, 13, 3);
+      box(ctx, "#bc2142", wx + 29, wy + 24, 13, 3);
+      box(ctx, "#f1b44c", wx + 15, wy + 24, 2, 2);
+      box(ctx, "#f1b44c", wx + 35, wy + 24, 2, 2);
+    }
+  }
+  outline(ctx, 324, 270, 120, 118, "#07060b", "#130f18", "#503047");
+  box(ctx, "#8f1530", 328, 376, 112, 12);
+  for (let i = 0; i < 7; i++) {
+    const drip = 5 + ((i * 9 + frame) % 18);
+    box(ctx, "#a41634", 338 + i * 15, 386, 5, drip);
+  }
+  // Childlike rainbow paint marks become increasingly wrong toward the door.
+  const rainbow = ["#e96473", "#e7ad47", "#d8d159", "#69a66a", "#5590b8", "#795d9f"];
+  rainbow.forEach((c, i) => box(ctx, c, 72 + i * 12, 340 - i * 3, 10, 56 + i * 3));
+  for (let i = 0; i < 28; i++) {
+    const rx = (i * 47 + frame * 4) % 768, ry = (i * 71 + frame * 9) % 432;
+    box(ctx, i % 3 ? "#4f718b" : "#9bb5c5", rx, ry, 2, 8);
+  }
+  // Hero and two faceless classmates use the same enlarged SD sprite language.
+  ctx.save();
+  ctx.translate(245, 239);
+  ctx.scale(2, 2);
+  drawCharacter(ctx, { x: 0, y: 68 }, "down", frame % 3);
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha = 0.72;
+  ctx.translate(520, 264);
+  ctx.scale(1.55, 1.55);
+  drawCharacter(ctx, { x: 0, y: 68 }, "down", 0, true);
+  ctx.restore();
+  if (frame % 37 === 0) box(ctx, "#f3e8d61f", 0, 0, 768, 432);
 }

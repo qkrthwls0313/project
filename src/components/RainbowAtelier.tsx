@@ -2,7 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { renderGame, renderOpening } from "@/game/pixelRenderer";
+import { renderGame, renderOpening, renderTitle } from "@/game/pixelRenderer";
 
 type Scene = "title" | "opening" | "game" | "ending";
 type Dir = "up" | "down" | "left" | "right";
@@ -581,15 +581,16 @@ export default function RainbowAtelier() {
               }}
             />
           )}
-          <div className="absolute left-3 top-3 z-20 flex gap-2">
+          <div className="pixel-status-row absolute left-3 top-3 z-20 flex gap-2">
             <Hud label="STAMINA" value={stamina} />
             <Hud label="SANITY" value={sanity} danger />
             <Hud label="BATTERY" value={battery} danger />
             <button
               onClick={() => setLight((v) => !v)}
-              className="border border-white/20 bg-black/65 px-2 text-xs"
+              className={`pixel-light-button ${light ? "is-on" : ""}`}
             >
-              {light ? "◉ LIGHT" : "○ DARK"}
+              <span aria-hidden="true">{light ? "▰" : "▱"}</span>
+              {light ? " LIGHT" : " DARK"}
             </button>
           </div>
           {(floor === "B2F" || flags.includes("burned")) && (
@@ -720,16 +721,17 @@ function Hud({
   value: number;
   danger?: boolean;
 }) {
+  const icon = label === "STAMINA" ? "◆" : label === "SANITY" ? "✦" : "▰";
   return (
-    <div className="w-24 border border-white/20 bg-black/65 p-1 sm:w-28">
-      <div className="mb-1 text-[8px] tracking-widest">
-        {label} {Math.round(value)}
-      </div>
-      <div className="h-1.5 bg-white/10">
-        <div
-          className={`h-full transition-all ${danger && value < 40 ? "bg-red-500" : "bg-amber-300"}`}
-          style={{ width: `${value}%` }}
-        />
+    <div className={`pixel-hud ${danger && value < 40 ? "is-danger" : ""}`}>
+      <span className="pixel-hud-icon" aria-hidden="true">{icon}</span>
+      <div className="pixel-hud-data">
+        <div className="pixel-hud-label">
+          <span>{label}</span><b>{Math.round(value)}</b>
+        </div>
+        <div className="pixel-hud-track">
+          <i style={{ width: `${value}%` }} />
+        </div>
       </div>
     </div>
   );
@@ -1425,6 +1427,28 @@ function CutVisual({ kind }: { kind: CutBeat["visual"]; scene: number }) {
     </div>
   );
 }
+function TitlePixelArt() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    let animation = 0;
+    const paint = (time: number) => {
+      const ctx = canvasRef.current?.getContext("2d");
+      if (ctx) renderTitle(ctx, time);
+      animation = requestAnimationFrame(paint);
+    };
+    animation = requestAnimationFrame(paint);
+    return () => cancelAnimationFrame(animation);
+  }, []);
+  return (
+    <canvas
+      ref={canvasRef}
+      width={768}
+      height={432}
+      aria-hidden="true"
+      className="pixel-title-canvas absolute inset-0 h-full w-full"
+    />
+  );
+}
 function TitleScreen({
   onStart,
   onLoad,
@@ -1436,37 +1460,27 @@ function TitleScreen({
 }) {
   return (
     <main className="pixel-title-screen relative flex min-h-screen items-center justify-center overflow-hidden p-6">
-      <div className="relative z-10 w-full max-w-3xl text-center">
-        <div className="pixel-title-emblem mx-auto mb-8 grid h-24 w-24 grid-cols-3 gap-1 border-4 border-[#f3e6c9] bg-[#eee0c1] p-3 shadow-[10px_10px_0_#57182c]">
-          <i className="bg-red-500" />
-          <i className="bg-amber-300" />
-          <i className="bg-emerald-400" />
-          <i className="bg-cyan-400" />
-          <i className="bg-blue-500" />
-          <i className="bg-violet-500" />
-          <i className="bg-fuchsia-400" />
-          <i className="bg-rose-300" />
-          <i className="bg-slate-900" />
-        </div>
-        <p className="mb-3 text-xs tracking-[.55em] text-rose-400">
+      <TitlePixelArt />
+      <div className="pixel-title-content relative z-10 w-full max-w-3xl text-center">
+        <p className="mb-3 text-[10px] tracking-[.55em] text-rose-300">
           2D PIXEL PSYCHOLOGICAL HORROR
         </p>
-        <h1 className="text-4xl font-black tracking-[-.06em] text-[#fff4d9] drop-shadow-[5px_5px_0_#7e1733] sm:text-7xl">
-          무지개빛
+        <h1 className="pixel-cute-title text-4xl font-black sm:text-7xl" aria-label="무지개빛 미술학원">
+          <span>무</span><span>지</span><span>개</span><span>빛</span>
           <br />
-          미술학원
+          <span>미</span><span>술</span><span>학</span><span>원</span>
         </h1>
         <p className="mt-4 font-serif text-sm tracking-[.18em] text-slate-400">
           The Rainbow Atelier
         </p>
-        <p className="mx-auto mt-8 max-w-md text-sm leading-7 text-slate-300">
+        <p className="pixel-title-copy mx-auto mt-5 max-w-md text-xs leading-6 text-slate-200">
           사라진 동생, 일곱 가지 물감, 그리고 밤마다 들리는 젖은 붓 소리.
           <br />
           <span className="text-rose-300">
             예쁜 색은 언제나 좋은 기억에서 만들어질까?
           </span>
         </p>
-        <div className="mt-10 flex flex-col items-center gap-3">
+        <div className="mt-6 flex flex-col items-center gap-3">
           <button
             onClick={onStart}
             className="pixel-menu-button pixel-menu-pink w-64 px-7 py-4 font-black tracking-[.25em]"
