@@ -4,6 +4,56 @@ export type OpeningVisual = "room" | "tv" | "phone" | "school";
 
 type Point = { x: number; y: number };
 const TILE = 16;
+let yunaSheet: HTMLCanvasElement | null = null;
+let yunaSheetLoading = false;
+
+function getYunaSheet() {
+  if (yunaSheet || yunaSheetLoading || typeof window === "undefined") return yunaSheet;
+  yunaSheetLoading = true;
+  const image = new Image();
+  image.src = "/assets/sprites/yuna-walk-source.png";
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+    context.imageSmoothingEnabled = false;
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = pixels.data;
+    const visited = new Uint8Array(canvas.width * canvas.height);
+    const queue = new Int32Array(canvas.width * canvas.height);
+    let head = 0, tail = 0;
+    const isBackdrop = (index: number) => {
+      const offset = index * 4, r = data[offset], g = data[offset + 1], b = data[offset + 2];
+      return r > 226 && g > 192 && b > 202 && r > g && Math.abs(r - b) < 42;
+    };
+    const enqueue = (index: number) => {
+      if (!visited[index] && isBackdrop(index)) {
+        visited[index] = 1;
+        queue[tail++] = index;
+      }
+    };
+    for (let x = 0; x < canvas.width; x++) {
+      enqueue(x); enqueue((canvas.height - 1) * canvas.width + x);
+    }
+    for (let y = 0; y < canvas.height; y++) {
+      enqueue(y * canvas.width); enqueue(y * canvas.width + canvas.width - 1);
+    }
+    while (head < tail) {
+      const index = queue[head++], x = index % canvas.width, y = Math.floor(index / canvas.width);
+      data[index * 4 + 3] = 0;
+      if (x > 0) enqueue(index - 1);
+      if (x + 1 < canvas.width) enqueue(index + 1);
+      if (y > 0) enqueue(index - canvas.width);
+      if (y + 1 < canvas.height) enqueue(index + canvas.width);
+    }
+    context.putImageData(pixels, 0, 0);
+    yunaSheet = canvas;
+  };
+  return null;
+}
 
 function box(
   ctx: CanvasRenderingContext2D,
@@ -230,6 +280,21 @@ export function drawCharacter(
   const stride = frame % 3 === 1 ? -2 : frame % 3 === 2 ? 2 : 0;
   const bob = stride ? -1 : 0;
   const x = Math.round(p.x - 24), y = Math.round(p.y - 62 + bob);
+  if (!villain) {
+    const sheet = getYunaSheet();
+    if (sheet) {
+      const row = dir === "down" ? 0 : dir === "left" ? 1 : dir === "right" ? 2 : 3;
+      const column = frame % 3;
+      const sourceX = [215, 500, 775][column];
+      const sourceY = [24, 323, 632, 925][row];
+      box(ctx, "#00000088", p.x - 20, p.y - 5, 40, 6);
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(sheet, sourceX, sourceY, 250, 290, p.x - 31, p.y - 76, 62, 76);
+      ctx.restore();
+      return;
+    }
+  }
   const edge = "#0c0a12", skin = villain ? "#bca79e" : "#e8b39f";
   const hair = villain ? "#ddd8cf" : "#6fa8c9";
   const hairDark = villain ? "#7e7882" : "#345b7f";
