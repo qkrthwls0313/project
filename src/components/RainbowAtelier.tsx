@@ -2,7 +2,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { renderGame, renderOpening } from "@/game/pixelRenderer";
 
 type Scene = "title" | "opening" | "game" | "ending";
@@ -739,20 +738,26 @@ function Portrait(props: {
   mood: "neutral" | "suspicious" | "terrified" | "insane";
   character: "yuna" | "seoa" | "minhyuk" | "klem" | "announcer";
 }) {
-  if (props.character === "yuna") {
-    return (
-      <Image
-        src="/assets/portraits/yuna-dialogue.png"
-        alt={`유나 ${props.mood} 대화 초상`}
-        width={1024}
-        height={1536}
-        priority
-        unoptimized
-        className={`dialogue-portrait dialogue-portrait-art ${props.mood === "insane" ? "glitch" : ""}`}
-      />
-    );
-  }
-  return <PixelPortrait {...props} />;
+  const moodIndex =
+    props.mood === "neutral" ? 0 : props.mood === "suspicious" ? 1 : 2;
+  const castIndex = {
+    yuna: 0,
+    seoa: 0,
+    minhyuk: 1,
+    klem: 2,
+    announcer: 3,
+  } as const;
+  const isYuna = props.character === "yuna";
+  const x = isYuna ? moodIndex * 50 : castIndex[props.character] * (100 / 3);
+  const y = isYuna ? 0 : moodIndex * 50;
+  return (
+    <div
+      role="img"
+      aria-label={`${props.character} ${props.mood} 대화 초상`}
+      className={`dialogue-portrait portrait-sprite ${isYuna ? "portrait-yuna" : "portrait-cast"} ${props.mood === "insane" ? "glitch" : ""}`}
+      style={{ backgroundPosition: `${x}% ${y}%` }}
+    />
+  );
 }
 function HorrorCutscene(props: {
   kind: "seoa" | "klem";
@@ -902,7 +907,7 @@ function drawDetailedYunaPortrait(
   r("#b5d7e5", 16, 44, 4, 28);
   r("#6b94ad", 107, 72, 3, 20);
 }
-function PixelPortrait({
+export function PixelPortrait({
   mood,
   character,
 }: {
@@ -1329,7 +1334,7 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
     beat < openingBeats.length - 1 ? setBeat((v) => v + 1) : onComplete();
   return (
     <main
-      className="relative min-h-screen overflow-hidden bg-black text-[#f7ecd5]"
+      className="opening-screen relative min-h-screen overflow-hidden bg-black text-[#f7ecd5]"
       onClick={next}
       onKeyDown={(e) => {
         if (e.key === " " || e.key === "Enter") next();
@@ -1359,11 +1364,19 @@ function OpeningCutscene({ onComplete }: { onComplete: () => void }) {
                   : "yuna"
             }
             mood={
-              b.tone === "danger"
-                ? "terrified"
-                : b.scene >= 2
-                  ? "suspicious"
-                  : "neutral"
+              b.speaker === "서아"
+                ? beat >= 9
+                  ? "terrified"
+                  : "suspicious"
+                : b.speaker === "NEWS" || b.speaker === "아나운서"
+                  ? beat >= 4
+                    ? "suspicious"
+                    : "neutral"
+                  : b.tone === "danger"
+                    ? "terrified"
+                    : b.scene >= 2
+                      ? "suspicious"
+                      : "neutral"
             }
           />
           <div className="pixel-dialogue-copy">

@@ -897,7 +897,7 @@ button:disabled {
 .pixel-dialogue {
   display: block;
   overflow: visible !important;
-  padding: 15px 18px 15px 148px !important;
+  padding: 15px 18px 15px 200px !important;
   border: 4px solid #17131b !important;
   outline: 2px solid #e0cf9e;
   outline-offset: -6px;
@@ -923,19 +923,28 @@ button:disabled {
   bottom: 5px;
   z-index: 2;
   display: block;
-  width: 120px;
+  width: 180px;
   height: 180px;
   border: 0;
   background: transparent;
   filter: drop-shadow(5px 0 0 #08060d) drop-shadow(-3px 0 0 #08060d);
 }
 
-.dialogue-portrait-art {
-  object-fit: cover;
-  object-position: center top;
-  background: #050712;
-  border: 2px solid #11101a;
-  box-shadow: inset 0 0 0 2px #394258;
+.portrait-sprite {
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.portrait-yuna {
+  background-image: url("/assets/portraits/yuna-emotions.png");
+  background-size: 300% 100%;
+}
+
+.portrait-cast {
+  background-image: url("/assets/portraits/cast-emotions.png");
+  background-size: 400% 300%;
 }
 
 .pixel-dialogue-copy {
@@ -988,12 +997,12 @@ input[type="range"] {
 
 @media (max-width: 639px) {
   .pixel-dialogue {
-    padding: 13px 12px 13px 92px !important;
+    padding: 13px 12px 13px 112px !important;
   }
   .dialogue-portrait {
     left: 6px;
-    width: 82px;
-    height: 123px;
+    width: 100px;
+    height: 100px;
   }
   .pixel-speaker {
     margin-top: -27px;
@@ -1002,14 +1011,14 @@ input[type="range"] {
 
 .opening-dialogue {
   min-height: 142px;
-  padding: 18px 22px 18px 258px !important;
+  padding: 18px 22px 18px 318px !important;
 }
 
 .opening-dialogue .dialogue-portrait {
   left: 18px;
   bottom: 4px;
-  width: 220px;
-  height: 330px;
+  width: 300px;
+  height: 300px;
   filter: drop-shadow(7px 0 0 #08060d) drop-shadow(-4px 0 0 #08060d);
 }
 
@@ -1018,6 +1027,14 @@ input[type="range"] {
 }
 
 .pixel-title-screen {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(100vw, 1180px);
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9;
+  max-height: 100vh;
+  transform: translate(-50%, -50%);
   background-color: #090711;
   background-image:
     linear-gradient(#171122 2px, transparent 2px),
@@ -1027,6 +1044,19 @@ input[type="range"] {
     inset 0 0 0 8px #050408,
     inset 0 0 0 12px #38233e;
   font-family: ui-monospace, "Malgun Gothic", monospace;
+}
+
+.opening-screen {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(100vw, 1180px);
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9;
+  max-height: 100vh;
+  transform: translate(-50%, -50%);
+  border: 4px solid #28233b;
+  box-shadow: 0 0 0 4px #08070d;
 }
 
 .pixel-title-screen::before,
@@ -1147,12 +1177,12 @@ section > div[class*="inset-10"] {
 @media (max-width: 639px) {
   .opening-dialogue {
     min-height: 116px;
-    padding: 14px 12px 14px 116px !important;
+    padding: 14px 12px 14px 126px !important;
   }
   .opening-dialogue .dialogue-portrait {
     left: 4px;
-    width: 108px;
-    height: 162px;
+    width: 116px;
+    height: 116px;
   }
   .pixel-menu-button {
     min-height: 54px;
