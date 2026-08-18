@@ -245,6 +245,26 @@ function drawDoor(
   }
 }
 
+function drawFloorMarker(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  label: string,
+  direction: "up" | "down" | "exit",
+  time: number,
+) {
+  const pulse = Math.floor(time / 360) % 2 === 0;
+  outline(ctx, x, y, 70, 31, "#080a11", "#172534", pulse ? "#d5bd62" : "#6d6140");
+  box(ctx, pulse ? "#d9bc55" : "#8f7b3d", x + 6, y + 6, 18, 18);
+  ctx.fillStyle = "#10151c";
+  ctx.font = "bold 13px monospace";
+  ctx.fillText(direction === "exit" ? "E" : direction === "up" ? "▲" : "▼", x + 9, y + 20);
+  ctx.fillStyle = pulse ? "#f5e9ad" : "#b6a86d";
+  ctx.font = "bold 9px monospace";
+  ctx.fillText(label, x + 29, y + 19);
+  for (let i = 0; i < 3; i++) box(ctx, "#8da0a1", x + 7 + i * 4, y + 26 - i * 3, 12 + i * 3, 2);
+}
+
 function drawEasel(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -313,10 +333,11 @@ export function drawCharacter(
       const column = frame % 3;
       const sourceX = [215, 500, 775][column];
       const sourceY = [24, 323, 632, 925][row];
-      box(ctx, "#00000088", p.x - 20, p.y - 5, 40, 6);
+      box(ctx, "#00000088", p.x - 25, p.y - 6, 50, 7);
       ctx.save();
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(sheet, sourceX, sourceY, 250, 290, p.x - 31, p.y - 76, 62, 76);
+      // Give the detailed walk sheet enough screen space to read like the cutscene art.
+      ctx.drawImage(sheet, sourceX, sourceY, 250, 290, p.x - 39, p.y - 90, 78, 90);
       ctx.restore();
       return;
     }
@@ -511,6 +532,18 @@ export function renderGame(
   if (floor === "B3F") {
     drawDistillery(ctx, 514, 72);
     drawEasel(ctx, 350, 70, true);
+  }
+  if (floor === "1F") {
+    drawFloorMarker(ctx, 356, 42, "2F 계단", "up", time);
+    drawFloorMarker(ctx, 628, 258, "B1F", "down", time);
+  } else if (floor === "2F") {
+    drawFloorMarker(ctx, 52, 252, "1F", "down", time);
+  } else if (floor === "B1F") {
+    drawFloorMarker(ctx, 52, 252, "1F", "up", time);
+  } else if (floor === "B2F") {
+    drawFloorMarker(ctx, 628, 252, "B3F", "down", time);
+  } else if (floor === "B3F") {
+    drawFloorMarker(ctx, 52, 252, "EXIT", "exit", time);
   }
   const movingFrame = Math.floor(time / 150) % 3;
   if (horror)

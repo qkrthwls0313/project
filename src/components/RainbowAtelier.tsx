@@ -1648,31 +1648,34 @@ function MixingPuzzle({
   const [rgb, setRgb] = useState([80, 80, 80]);
   const target = [212, 143, 56];
   const ok = rgb.every((v, i) => Math.abs(v - target[i]) <= 8);
-  const colors = ["R 동맥의 붉은색", "G 담즙의 노란색", "B 뇌척수액의 푸른색"];
+  const colors = [
+    { name: "R · 동맥 안료", glyph: "♥", tint: "#b91f45" },
+    { name: "G · 담즙 안료", glyph: "☣", tint: "#d2ad3d" },
+    { name: "B · 뇌척수액", glyph: "◈", tint: "#347fa5" },
+  ];
   return (
-    <div className="absolute inset-4 z-50 overflow-auto border-2 border-amber-300 bg-[#0d1020]/97 p-5 sm:inset-10">
-      <div className="flex justify-between">
+    <div className="absolute inset-2 z-50 overflow-auto border-4 border-[#f0eee8] bg-[#030303]/[.99] p-3 text-[#f0eee8] grayscale contrast-125 shadow-[inset_0_0_0_3px_#5c5c5c,0_0_35px_#000] sm:inset-8 sm:p-5">
+      <div className="flex items-start justify-between border-b-2 border-[#522538] pb-3">
         <div>
-          <p className="text-[10px] tracking-[.3em] text-amber-300">
-            B1F · RGB HUMAN PIGMENT
-          </p>
-          <h2 className="mt-1 text-lg font-black">인체 물감 배합기</h2>
+          <p className="text-[10px] tracking-[.28em] text-[#bdbdbd]">B1F · FORBIDDEN COLOR LAB</p>
+          <h2 className="mt-1 text-lg font-black tracking-[.08em] text-[#ffffff]">인체 물감 배합기</h2>
+          <p className="mt-1 text-[10px] text-[#cfcfcf]">The air turns cold and suffocating.</p>
         </div>
-        <button onClick={close}>✕</button>
+        <button onClick={close} className="border-2 border-[#d7d7d7] px-3 py-1 text-[#ffffff] hover:bg-[#333333]">✕</button>
       </div>
-      <p className="mt-4 text-xs text-slate-400">
-        연구 일지의 목표값 R212 · G143 · B56에 맞춰 각 안료 밸브를 조절하세요.
-        ±8 허용
-      </p>
-      <div className="mt-5 grid gap-4">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-2 border-[#332532] bg-[#120f18] px-3 py-2 text-[10px] text-[#bdaab0]">
+        <span className="text-[#ffffff]">⚠ A WANDERING COLOR MASS APPROACHES</span><b className="text-[#ffffff]">R212 · G143 · B56</b><span className="text-[#cfcfcf]">조직 붕괴 오차 ±8</span>
+      </div>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_180px_1fr] lg:items-center">
+        <div className="grid gap-3">
         {rgb.map((v, i) => (
           <label
-            key={colors[i]}
-            className="grid grid-cols-[150px_1fr_42px] items-center gap-3 text-xs"
+            key={colors[i].name}
+            className="relative grid grid-cols-[42px_1fr_38px] items-center gap-2 border-2 border-[#382333] bg-[#15121b] p-2 text-xs"
           >
-            <span>{colors[i]}</span>
+            <span className="flex h-8 w-8 items-center justify-center border-2 border-[#604052] text-base" style={{ color: colors[i].tint }}>{colors[i].glyph}</span>
             <input
-              aria-label={colors[i]}
+              aria-label={colors[i].name}
               type="range"
               min="0"
               max="255"
@@ -1684,21 +1687,47 @@ function MixingPuzzle({
               }
               className="accent-rose-500"
             />
-            <b>{v}</b>
+            <b className="text-right text-[#f2d6bd]">{v}</b>
+            <span className="col-span-3 text-[10px] tracking-wider text-[#a99196]">{colors[i].name}</span>
           </label>
         ))}
+        </div>
+        <div className="relative mx-auto flex h-44 w-36 items-center justify-center border-2 border-[#352532] bg-[#0d1118] shadow-[0_0_18px_#2d1025]">
+          <div className="absolute -top-3 h-6 w-14 border-2 border-[#917c83] bg-[#25222b]" />
+          <div className="relative h-28 w-20 overflow-hidden border-4 border-[#c4b8a8] bg-[#182b35]/80 shadow-[inset_0_0_0_3px_#4b5c63]">
+            <div className="absolute inset-x-0 bottom-0 h-[42%] transition-colors" style={{ background: `rgb(${rgb.join(",")})` }} />
+            <div className="absolute left-3 top-3 h-2 w-2 bg-[#f3e5d2] shadow-[14px_8px_#f3e5d2,28px_-2px_#f3e5d2]" />
+            <div className="absolute bottom-2 left-1/2 h-5 w-1 -translate-x-1/2 bg-[#7b1837] shadow-[-12px_-7px_#b91f45,12px_-14px_#d2ad3d]" />
+            <div className="absolute bottom-0 left-2 h-3 w-2 bg-[#e34d5b] shadow-[6px_4px_#8f1938,48px_2px_#b91f45]" />
+          </div>
+          <span className="absolute bottom-2 text-[9px] tracking-[.18em] text-[#ffffff]">{ok ? "응고 안정" : "조직 불안정"}</span>
+          <span className="absolute left-1 top-1 text-[9px] text-[#9f263c]">●</span><span className="absolute right-1 top-1 text-[9px] text-[#9f263c]">●</span>
+        </div>
+        <div className="grid gap-2 text-center text-[10px] text-[#bdaab0] lg:grid-cols-1">
+          <div className="relative border-2 border-[#625b5b] bg-black p-2 shadow-[inset_0_0_0_2px_#1d1d1d]">
+            <img
+              src="/assets/ui/human-pigment-mass.png"
+              alt="혈관과 점액이 뒤엉킨 인체 안료 덩어리"
+              className="mx-auto h-40 w-full object-contain pixel-art-canvas opacity-90 sm:h-48"
+            />
+            <span className="absolute bottom-1 left-0 right-0 text-[9px] tracking-[.16em] text-[#d9d9d9]">SPECIMEN 07 · 살아 있는 색</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+          {colors.map((color, i) => <div key={color.name} className="border-2 border-[#382333] bg-[#15121b] p-2"><span className="block text-lg" style={{ color: color.tint }}>{color.glyph}</span><span>{["동맥 채혈", "담낭 추출", "척수 천자"][i]}</span></div>)}
+          </div>
+        </div>
       </div>
-      <div className="mt-6 flex items-center gap-4">
+      <div className="mt-4 flex items-center gap-3 border-t-2 border-[#522538] pt-3">
         <div
-          className="h-14 flex-1 border-4 border-black/30"
+          className="h-10 flex-1 border-4 border-[#17131b] shadow-[inset_0_0_0_2px_#76606a]"
           style={{ background: `rgb(${rgb.join(",")})` }}
         />
         <button
           disabled={!ok}
           onClick={complete}
-          className="border border-amber-300 px-5 py-4 text-sm font-black enabled:bg-amber-300 enabled:text-black disabled:opacity-30"
+          className="border-2 border-[#dd3d58] px-4 py-3 text-sm font-black text-[#f2b8ad] enabled:bg-[#7c1634] enabled:text-white disabled:border-[#4a3441] disabled:text-[#604c55]"
         >
-          배합 확정
+          ▶ 봉인한다
         </button>
       </div>
     </div>
